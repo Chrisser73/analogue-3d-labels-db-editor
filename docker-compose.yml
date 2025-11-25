@@ -4,7 +4,6 @@ services:
     container_name: labelsdb-editor
     restart: unless-stopped
     volumes:
-      # Statt ./webapp jetzt den aktuellen Ordner einbinden:
       - ./:/usr/share/nginx/html:ro
     ports:
       - "4377:80"

@@ -1,8 +1,10 @@
-# 🎮 Labels.db File Editor
+# 🎮 Analogue 3D Labels.db File Extractor & Editor
 
 ![App Icon](./assets/icon.png)
 
 ## WEBAPP here: http://a3d-tools.christopher-matthes.de/
+
+#### For self-hosted see [docker part](#docker-compose-self-hosting)
 
 _A modern, browser-based editor for Analogue 3D `labels.db` files_
 
@@ -62,10 +64,14 @@ The “Modify Database” panel allows you to insert or update entries:
    - This is the signature that Analogue 3D uses to match cartridges.
 
 3. **Insert / Replace**
+
    - If the CRC already exists in the database:
      - The existing label image for that CRC is replaced.
    - If the CRC does not exist:
      - A new entry is appended to the in-memory list.
+
+4. **Batch download Images**
+   - If the .db was extracted successfully, you will be able to download the extraced images as .zip-file via the "Download Images (ZIP)"-button.
 
 All changes happen **in-memory** until you download the modified file.
 
@@ -172,22 +178,20 @@ In the editor:
 ## Docker Compose (self-hosting)
 
 Although the app is purely static (HTML/CSS/JS), you can self-host it conveniently using Docker Compose, e.g. with **nginx**.
+You will find the docker-compose.yml inside the files.
 
 Example `docker-compose.yml`:
 
 ```yaml
-version: "3.8"
-
 services:
   labelsdb-editor:
     image: nginx:alpine
     container_name: labelsdb-editor
     restart: unless-stopped
     volumes:
-      # Adjust the left-hand path to where your web files live (index.html, style.css, script.js)
-      - ./webapp:/usr/share/nginx/html:ro
+      - ./:/usr/share/nginx/html:ro
     ports:
-      - "8080:80"
+      - "4377:80"
 ```
 
 ### Usage (once you’ve prepared the `webapp` directory with the static files):
@@ -202,8 +206,7 @@ docker compose up -d
 
 You’ll see the **Labels.db** File Editor, fully served via nginx — ready for local or LAN use.
 
-🔁 The packaging / image-building process (e.g. custom Docker image, CI build) can be refined later.
-This basic Compose setup is enough to self-host the static app from a folder on your machine.
+The packaging / image-building process (e.g. custom Docker image, CI build) can be refined later. This basic Compose setup is enough to self-host the static app from a folder on your machine.
 
 ## ⚠️ Backup reminder (again, because it matters)
 
