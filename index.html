@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Labels.db File Extractor & Editor – Analogue 3D Label Tool</title>
+    <meta
+      name="description"
+      content="Online editor for Analogue 3D labels.db files. View, add, remove and replace cartridge label images directly in your browser."
+    />
+
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
+    <link rel="icon" type="image/png" href="assets/icon.png" />
+    <link rel="apple-touch-icon" href="assets/icon.png" />
+    <link rel="shortcut icon" href="assets/icon-alt.png" type="image/png" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index,follow" />
+    <meta
+      property="og:title"
+      content="Labels.db File Extractor & Editor – Analogue 3D"
+    />
+    <meta
+      property="og:description"
+      content="View and edit Analogue 3D labels.db files in your browser. Add custom labels for cartridges and flashcarts."
+    />
+    <meta property="og:type" content="website" />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <h1>
+        <img class="logo" src="assets/icon-alt.png" />
+        <span class="logo-text">Labels.db File Extractor & Editor</span>
+      </h1>
+
+      <section class="panel top-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Load Database File</h2>
+            <p class="small-note">
+              Load your existing <code>labels.db</code> so you can view and edit
+              its entries locally in your browser or use the one from <a href="./assets/labels.db" target="_blank" title="labels.db file download">here</a>.
+            </p>
+          </div>
+          <small id="db-status">No DB loaded</small>
+        </div>
+
+        <form id="db-form">
+          <label
+            ><strong>labels.db file:</strong>
+            <br />
+            <input type="file" id="db-input" accept=".db" required />
+          </label>
+          <button type="submit" class="btn-primary">Load DB</button>
+          <button
+            type="button"
+            id="download-btn"
+            class="btn-secondary"
+            disabled
+          >
+            Download Modified DB
+          </button>
+          <button
+            type="button"
+            id="download-images-btn"
+            class="btn-secondary"
+            disabled
+          >
+            Download Images (ZIP)
+          </button>
+        </form>
+
+        <div id="message" class="message" hidden></div>
+      </section>
+
+      <section class="layout" id="editor" hidden>
+        <div class="panel">
+          <h2>Modify Database</h2>
+          <p class="small-note">
+            Add a new image or replace an existing one using its CRC32 cartridge
+            signature.
+          </p>
+          <form id="add-form">
+            <label>
+              <strong>PNG Image</strong> (any size; will be resized to 74×86):
+              <input type="file" id="image-input" accept="image/png" required />
+            </label>
+            <label>
+              <strong>Cartridge Signature</strong> (CRC32, 8-digit Hex):
+              <input
+                type="text"
+                id="crc-input"
+                placeholder="98E67875"
+                required
+              />
+            </label>
+            <button type="submit" class="btn-primary">Insert / Replace</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="images-header">
+            <h2>Extracted Images</h2>
+            <small id="count-label">0 entries</small>
+          </div>
+          <div id="card-grid" class="card-grid"></div>
+        </div>
+      </section>
+
+      <div id="copyright"
+        >&copy; <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script> by Christopher Matthes | Visit me on:
+        <a href="https://github.com/Chrisser73" target="_blank">Github</a> | 
+        <a href="https://christopher-matthes.de" target="_blank">Homepage</a> | 
+        <a href="https://www.instagram.com/crysercore/" target="_blank">Instagram</a>
+        </span>
+    </div>
+
+    <script src="jszip.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
