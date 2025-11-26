@@ -1,0 +1,268 @@
+@use "./theme";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 24px 16px 40px;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top, #202338 0, #05060a 55%);
+  color: theme.$fg;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+a {
+  color: theme.$accent-strong;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.app {
+  width: 100%;
+  max-width: 1200px;
+}
+
+header {
+  margin-bottom: 18px;
+}
+
+h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  margin: 0;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-text {
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+
+p {
+  margin: 4px 0;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 90%;
+}
+
+.panel {
+  background: theme.$bg-panel;
+  border-radius: theme.$radius-lg;
+  border: 1px solid theme.$border-soft;
+  padding: 14px 16px 16px;
+  box-shadow: theme.$shadow-soft;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.panel-header small {
+  color: theme.$muted;
+  font-size: 12px;
+}
+
+.top-panel {
+  margin-bottom: 16px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  color: theme.$muted;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.button-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+input[type="file"],
+input[type="text"] {
+  margin-top: 8px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: theme.$radius-sm;
+  border: 1px solid theme.$border-soft;
+  background: #080915;
+  color: theme.$fg;
+  font-size: 14px;
+}
+
+input[type="text"]::placeholder {
+  color: #525678;
+}
+
+button {
+  margin-top: 10px;
+  padding: 7px 12px;
+  font-size: 14px;
+  border-radius: theme.$radius-sm;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 150ms ease, box-shadow 150ms ease, opacity 120ms ease;
+}
+
+.btn-primary {
+  background: theme.$accent;
+  color: #fff;
+  box-shadow: 0 3px 14px rgba(108, 92, 231, 0.7);
+}
+
+.btn-primary:hover {
+  background: theme.$accent-strong;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid theme.$accent;
+  color: theme.$accent-strong;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: theme.$accent-soft;
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #e74c3c;
+}
+
+.small-note {
+  font-size: 14px;
+  color: theme.$muted;
+}
+
+.message {
+  margin-top: 20px;
+  padding: 7px 9px;
+  border-radius: theme.$radius-sm;
+  background: theme.$danger-soft;
+  border: 1px solid theme.$danger;
+  font-size: 14px;
+}
+
+.images-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.images-header small {
+  color: theme.$muted;
+  font-size: 12px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.card {
+  background: theme.$bg-panel-soft;
+  border-radius: theme.$radius-md;
+  border: 1px solid #23263b;
+  padding: 8px 8px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-thumb {
+  width: 94px;
+  height: 110px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #050608;
+  border: 1px solid #313552;
+  margin-bottom: 6px;
+}
+
+.card-id {
+  font-family: monospace;
+  font-size: 12px;
+  color: theme.$muted;
+  margin-bottom: 4px;
+}
+
+.card-remove {
+  font-size: 11px;
+  padding: 5px 8px;
+}
+
+#copyright {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 24px;
+  color: theme.$muted;
+  font-size: 12px;
+  gap: 4px;
+}
+
+#copyright a {
+  margin: 0 4px;
+}

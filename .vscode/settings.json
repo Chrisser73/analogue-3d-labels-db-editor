@@ -1,0 +1,9 @@
+{
+    "chatgpt.openOnStartup": true,
+    "chat.mcp.serverSampling": {
+
+    },
+    "chat.mcp.discovery.enabled": {
+        "windsurf": true
+    }
+}
