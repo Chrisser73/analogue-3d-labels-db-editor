@@ -144,7 +144,6 @@ function buildLabelsDb(db) {
   const numEntries = indexRegionSz / 4;
   const numImages = db.signatures.length;
 
-  // sort signatures + images gemeinsam
   const indices = db.signatures.map((_, i) => i);
   indices.sort((a, b) => db.signatures[a] - db.signatures[b]);
 
@@ -170,8 +169,6 @@ function buildLabelsDb(db) {
   let pos = IMAGES_START;
   for (let i = 0; i < sortedImgs.length; i++) {
     out.set(sortedImgs[i], pos);
-    // rest des Blocks (Padding) lassen wir 0 – Analogue scheint 0xFF zu nutzen,
-    // aber 0 ist in der Praxis okay.
     pos += IMAGE_BLOCK;
   }
 
@@ -186,7 +183,7 @@ function pngFileToBGRA(file) {
     fr.onload = () => {
       const img = new Image();
       img.onload = () => {
-        // zeichne auf 74x86 Canvas
+        // crop 74x86 Canvas
         const canvas = document.createElement("canvas");
         canvas.width = IMAGE_W;
         canvas.height = IMAGE_H;
@@ -253,7 +250,7 @@ downloadImagesBtn.addEventListener("click", async () => {
 
   db.signatures.forEach((sig, idx) => {
     const filename = sig.toString(16).toUpperCase().padStart(8, "0") + ".png";
-    const dataUrl = bgraToDataURL(db.images[idx]); // wir haben diese Funktion schon
+    const dataUrl = bgraToDataURL(db.images[idx]);
     const base64 = dataUrl.split(",")[1]; // data:image/png;base64,XXXX
 
     zip.file(filename, base64, { base64: true });
