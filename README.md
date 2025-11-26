@@ -33,7 +33,7 @@ All processing happens locally in your browser – no data is ever uploaded to a
 Each card shows:
 
 - A **thumbnail preview** rendered from the raw BGRA data.
-- The **cartridge signature** (CRC32, 8-digit hex).
+- The **cartridge signature** (CRC32, first 8KiB /Byteorder).
 - A **Remove** button to delete that entry from the in-memory database.
 
 ---
