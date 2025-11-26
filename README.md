@@ -2,7 +2,7 @@
 
 ![App Icon](./assets/icon.png)
 
-## WEBAPP here: http://a3d-tools.christopher-matthes.de/
+## Web App here: http://a3d-tools.christopher-matthes.de/
 
 #### For self-hosted see [docker part](#docker-compose-self-hosting)
 

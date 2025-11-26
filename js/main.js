@@ -8,7 +8,6 @@ const IMAGE_BLOCK = 25600; // 74*86*4 + padding
 
 let db = null; // { header, signatures[], images[], indexRegionSz }
 
-// DOM
 const dbForm = document.getElementById("db-form");
 const dbInput = document.getElementById("db-input");
 const dbStatus = document.getElementById("db-status");
@@ -20,7 +19,17 @@ const addForm = document.getElementById("add-form");
 const imageInput = document.getElementById("image-input");
 const crcInput = document.getElementById("crc-input");
 const downloadBtn = document.getElementById("download-btn");
-const downloadImagesBtn = document.getElementById("download-images-btn"); // NEU
+const downloadImagesBtn = document.getElementById("download-images-btn");
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("loadedconsole.log(yearEl);");
+  const yearEl = document.getElementById("year");
+
+  console.log(yearEl);
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
+});
 
 function setMessage(text) {
   if (!text) {
@@ -43,7 +52,7 @@ dbForm.addEventListener("submit", async (e) => {
     dbStatus.textContent = `${db.signatures.length} images loaded`;
     editor.hidden = false;
     downloadBtn.disabled = false;
-    downloadImagesBtn.disabled = false; // NEU
+    downloadImagesBtn.disabled = false;
     renderGrid();
     setMessage("DB loaded successfully.");
   } catch (err) {

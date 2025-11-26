@@ -250,7 +250,8 @@ a {
 
 #copyright {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin-top: 24px;
     color: var(--muted);
     font-size: 12px;
