@@ -28,8 +28,6 @@
             >.
           </p>
         </div>
-
-        <Badge>{{ dbStatus }}</Badge>
       </div>
 
       <form class="load-grid" @submit.prevent="onLoadDb">
@@ -125,17 +123,12 @@
 
           <div class="stacked search-block">
             <InputUi
-              label="Search entries"
+              label="Search list"
               :inputId="'filterInput'"
               :inputName="'filterInput'"
-              hint="Comma separated e.g. 04079B93,52BA66FA"
               v-model="searchQuery"
-              placeholder="Enter CRC32 values to filter"
+              placeholder="E.g. 04079B93,52BA66FA"
             />
-            <small class="small-note"
-              >Hint: separate multiple CRC32 values with commas to show only
-              those entries.</small
-            >
           </div>
         </div>
       </div>
@@ -143,7 +136,10 @@
       <div class="panel">
         <div class="images-header">
           <h2>Extracted Images</h2>
-          <small>{{ countLabel }}</small>
+          <!--<small>{{ countLabel }}</small>-->
+          <small
+            ><Badge>{{ dbStatus }}</Badge></small
+          >
         </div>
         <div v-if="state.loadingDb" class="panel-loading">
           <Spinner :class="'ui-spinner-lg'" />
@@ -155,7 +151,11 @@
           </p>
         </div>
         <div v-else id="card-grid" class="card-grid">
-          <UiCard v-for="(entry, idx) in filteredEntries" :key="entry.display">
+          <UiCard
+            v-for="(entry, idx) in filteredEntries"
+            :key="entry.display"
+            :id="entry.display"
+          >
             <img class="card-thumb" :src="entry.url" alt="label preview" />
             <div class="card-meta">
               <div class="card-id">
@@ -246,13 +246,18 @@ const countLabel = computed(() =>
 const year = new Date().getFullYear();
 
 const cardEntries = computed(() => {
+  const romMap = romNames.value;
   if (!state.db) return [];
-  return state.db.signatures.map((sig, idx) => ({
-    sig,
-    display: sig.toString(16).toUpperCase().padStart(8, "0"),
-    url: bgraToDataURL(state.db.images[idx]),
-    filename: romNames.value.get(sig.toString(16).toUpperCase()) || "",
-  }));
+
+  return state.db.signatures.map((sig, idx) => {
+    const key = sig.toString(16).toUpperCase().padStart(8, "0");
+    return {
+      sig,
+      display: key,
+      url: bgraToDataURL(state.db.images[idx]),
+      filename: romMap.get(key) ?? "",
+    };
+  });
 });
 
 const filteredEntries = computed(() => {
@@ -285,7 +290,7 @@ async function onLoadDb() {
   try {
     const buf = await selectedDbFile.value.arrayBuffer();
     state.db = parseLabelsDb(buf);
-    state.status = `${state.db.signatures.length} images loaded`;
+    state.status = `${state.db.signatures.length} images`;
     setMessage("DB loaded successfully.");
   } catch (err) {
     console.error(err);
@@ -341,7 +346,7 @@ function removeEntry(idx) {
   if (!state.db) return;
   state.db.signatures.splice(idx, 1);
   state.db.images.splice(idx, 1);
-  state.status = `${state.db.signatures.length} images loaded`;
+  state.status = `${state.db.signatures.length} images`;
 }
 
 function downloadDb() {
@@ -533,24 +538,96 @@ function copyToClipboard(text) {
 }
 
 async function loadRomNames() {
+  let csv = "";
   try {
     const resp = await fetch("/assets/rom_signatures.csv");
-    const csv = await resp.text();
-    const lines = csv.split(/\r?\n/).filter((l) => l.trim().length > 0);
-    const map = new Map();
-    for (let i = 1; i < lines.length; i += 1) {
-      const line = lines[i];
-      const match = line.match(/^\"?(.*?)\"?,\"?([0-9A-Fa-f]{8})\"?/);
-      if (!match) continue;
-      const rawName = match[1] || "";
-      const sig = match[2].toUpperCase();
-      const noExt = rawName.replace(/\.[^.]+$/, "");
-      map.set(sig, noExt);
-    }
-    romNames.value = map;
+    csv = await resp.text();
   } catch (err) {
-    console.error("Failed to load rom signatures", err);
+    console.error(
+      "Failed to fetch rom signatures, trying import fallback",
+      err
+    );
+    try {
+      const mod = await import("./data/rom_signatures.csv?raw");
+      csv = mod.default || "";
+    } catch (e) {
+      console.error("Fallback import for rom signatures failed", e);
+      return;
+    }
   }
+
+  if (!csv) return;
+
+  const lines = csv.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  const map = new Map();
+  for (let i = 1; i < lines.length; i += 1) {
+    const line = lines[i];
+    const parsed = line.match(/"([^"]+)"\s*,\s*"([0-9A-Fa-f]{8})"/);
+    if (!parsed) continue;
+    const rawName = parsed[1];
+    const sig = parsed[2].toUpperCase();
+    if (map.has(sig)) continue; // drop duplicate signatures
+    map.set(sig, cleanRomName(rawName));
+  }
+  romNames.value = map;
+}
+
+function cleanRomName(raw) {
+  // nur .z64 / .n64 / .zip / .bin / etc. entfernen,
+  // nicht "J.League ..."
+  const noExt = raw.replace(/\.[A-Za-z0-9]{2,4}$/, "");
+
+  const tags = [];
+  const base = noExt.replace(/\s*\([^)]*\)/g, (match) => {
+    const inner = match.slice(1, -1).trim();
+    if (!inner) return "";
+
+    const lower = inner.toLowerCase();
+    if (lower.includes("proto")) {
+      tags.push("Proto");
+    } else if (lower.includes("aftermarket")) {
+      tags.push("Aftermarket");
+    } else if (lower.includes("unl") || lower.includes("unlicensed")) {
+      tags.push("UNL");
+    } else if (lower.startsWith("rev")) {
+      tags.push(inner);
+    } else if (lower.startsWith("v") && /\d/.test(inner)) {
+      tags.push(inner);
+    } else if (lower.includes("demo")) {
+      tags.push("Demo");
+    } else if (lower.includes("ntsc-j")) {
+      tags.push("NTSC-J");
+    } else if (lower === "pal") {
+      tags.push("PAL");
+    } else if (lower === "ntsc") {
+      tags.push("NTSC");
+    } else if (lower.includes("japan")) {
+      tags.push("NTSC-J");
+    } else if (
+      lower.includes("usa") ||
+      lower.includes("u.s.a") ||
+      lower.includes("north america")
+    ) {
+      tags.push("NTSC");
+    } else if (
+      lower.includes("europe") ||
+      lower.includes("australia") ||
+      lower.includes("germany") ||
+      lower.includes("france") ||
+      lower.includes("spain") ||
+      lower.includes("italy") ||
+      lower.includes("uk") ||
+      lower.includes("england")
+    ) {
+      tags.push("PAL");
+    }
+    return "";
+  });
+
+  const cleanedBase = base.trim().replace(/\s+/g, " ");
+  const uniqTags = [...new Set(tags)];
+  if (!uniqTags.length) return cleanedBase;
+  return `${cleanedBase} (${uniqTags.join(" / ")})`;
 }
 
 onMounted(() => {

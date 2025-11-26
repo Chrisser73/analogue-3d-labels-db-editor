@@ -160,6 +160,7 @@ code {
 .small-note {
   font-size: 14px;
   color: theme.$muted;
+  margin: 10px 0;
 }
 
 .ui-input-wrap {
@@ -171,6 +172,7 @@ code {
 .ui-label {
   font-size: 14px;
   color: theme.$fg;
+  font-weight: bold;
 }
 
 .ui-hint {
@@ -228,10 +230,13 @@ code {
 
 .ui-btn:hover:not(.ui-btn-disabled) {
   transform: translateY(-1px);
+  transition: all 0.2s ease;
 }
 
 .ui-btn:active:not(.ui-btn-disabled) {
   transform: translateY(0);
+  background: #5e4fdc;
+  transition: all 0.2s ease;
 }
 
 .ui-btn-disabled {
@@ -252,7 +257,7 @@ code {
 }
 
 .ui-btn-destructive {
-  background: linear-gradient(180deg, #c0392b, #9e2f24);
+  background: linear-gradient(180deg, #991e34, #5f1b2c);
   color: #fff;
 }
 
@@ -306,6 +311,7 @@ code {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  justify-content: space-between;
 }
 
 .ui-icon-sm {
@@ -401,6 +407,7 @@ code {
 .card-name {
   font-size: 12px;
   color: theme.$fg;
+  text-align: center;
 }
 
 .copy-btn {
@@ -518,5 +525,5 @@ code {
 }
 
 .search-block {
-  margin-top: 10px;
+  margin-top: 30px;
 }
