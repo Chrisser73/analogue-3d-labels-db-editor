@@ -179,24 +179,30 @@ In the editor:
 
 ## Docker Compose (self-hosting)
 
-Although the app is purely static (HTML/CSS/JS), you can self-host it conveniently using Docker Compose, e.g. with **nginx**.
-You will find the docker-compose.yml inside the files.
+The project now ships with a multi-stage Docker build so Compose produces a static site image automatically.
 
-File inside repo: `docker-compose.yml`:
+Files:
 
-### Usage (once you’ve prepared the `webapp` directory with the static files):
+- `Dockerfile` – builds the app with Node, then serves the compiled `dist/` via nginx.
+- `docker-compose.yml` – uses the Dockerfile (no volume mount) and exposes port `4377` by default.
+- `.dockerignore` – keeps the image lean (skips `node_modules`, `dist`, git, editor cruft).
+
+### Usage
 
 ```bash
+docker compose build
 docker compose up -d
 ```
 
-#### Then open:
+Then open: `http://localhost:4377`
 
-`http://localhost:4377`
+Compose will build the assets inside the container and serve the optimized static bundle from nginx. No manual `npm run build` needed outside the container.
 
-You’ll see the **Labels.db** File Editor, fully served via nginx — ready for local or LAN use.
+### NPM scripts
 
-The packaging / image-building process (e.g. custom Docker image, CI build) can be refined later. This basic Compose setup is enough to self-host the static app from a folder on your machine.
+- `npm run dev` – start Vite dev server for local development.
+- `npm run build` – create a production build in `dist/`.
+- `npm run preview` – serve the built `dist/` locally to validate the production bundle.
 
 ## ⚠️ Backup reminder (again, because it matters)
 
