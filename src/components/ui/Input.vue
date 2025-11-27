@@ -4,17 +4,26 @@
       {{ label }}
       <span v-if="hint" class="ui-hint"> ({{ hint }})</span>
     </label>
-    <input
-      ref="inputEl"
-      v-bind="$attrs"
-      class="ui-input"
-      :id="inputId"
-      :name="inputName"
-      :type="type"
-      :placeholder="placeholder"
-      :value="type === 'file' ? null : modelValue"
-      @input="onInput"
-    />
+    <div class="ui-input-shell">
+      <img
+        v-if="prefixIcon"
+        :src="prefixIcon"
+        class="ui-input-icon"
+        aria-hidden="true"
+      />
+      <input
+        ref="inputEl"
+        v-bind="$attrs"
+        class="ui-input"
+        :class="{ 'with-icon': !!prefixIcon }"
+        :id="inputId"
+        :name="inputName"
+        :type="type"
+        :placeholder="placeholder"
+        :value="type === 'file' ? null : modelValue"
+        @input="onInput"
+      />
+    </div>
   </div>
 </template>
 
@@ -43,6 +52,10 @@ const props = defineProps({
   type: {
     type: String,
     default: "text",
+  },
+  prefixIcon: {
+    type: String,
+    default: "",
   },
   placeholder: {
     type: String,

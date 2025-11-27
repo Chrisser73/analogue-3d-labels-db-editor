@@ -192,6 +192,27 @@ code {
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 
+.ui-input.with-icon {
+  padding-left: 36px;
+}
+
+.ui-input-shell {
+  position: relative;
+  width: 100%;
+}
+
+.ui-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+  pointer-events: none;
+  filter: invert(80%);
+}
+
 .ui-input:focus {
   border-color: theme.$accent;
   box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
@@ -301,20 +322,6 @@ code {
   color: theme.$fg;
 }
 
-.ui-card {
-  background: theme.$bg-card;
-  border: 1px solid rgba(88, 93, 140, 0.4);
-  border-radius: theme.$radius-md;
-  padding: 8px 8px 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  justify-content: space-between;
-  transition: border-color 200ms ease, box-shadow 200ms ease;
-}
-
 .ui-icon-sm {
   width: 12px;
   height: 12px;
@@ -373,6 +380,28 @@ code {
   gap: 14px;
 }
 
+.ui-card {
+  background: theme.$bg-card;
+  border: 1px solid rgba(88, 93, 140, 0.4);
+  border-radius: theme.$radius-md;
+  padding: 8px 8px 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  transition: border-color 400ms ease, box-shadow 400ms ease,
+    background-color 400ms ease;
+}
+
+.card-highlight {
+  border-color: theme.$accent;
+  box-shadow: 0px 0px 6px 6px rgba(108, 92, 231, 0.35);
+  background-color: rgba(108, 92, 231, 0.1);
+  animation: pulse-highlight 2s ease;
+}
+
 .card-thumb {
   height: 110px;
   max-height: 110px;
@@ -409,13 +438,6 @@ code {
   font-size: 12px;
   color: theme.$fg;
   text-align: center;
-}
-
-.card-highlight {
-  border-color: theme.$accent;
-  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.35),
-    0 12px 30px rgba(0, 0, 0, 0.65);
-  animation: pulse-highlight 1.4s ease;
 }
 
 @keyframes pulse-highlight {

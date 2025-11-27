@@ -147,6 +147,8 @@ When exporting:
 ## Cartridge signatures (CRC32)
 
 The **cartridge signature** is a 32-bit CRC32 value, represented as an 8-digit hex string (e.g. `98E67875`).
+The Analogue 3D does not use the CRC32 of the full ROM.
+Instead, it calculates a signature by hashing only the first 8 KiB (8192 bytes) of the ROM using the standard IEEE CRC32 polynomial.
 
 According to reverse engineering efforts:
 
@@ -180,19 +182,7 @@ In the editor:
 Although the app is purely static (HTML/CSS/JS), you can self-host it conveniently using Docker Compose, e.g. with **nginx**.
 You will find the docker-compose.yml inside the files.
 
-Example `docker-compose.yml`:
-
-```yaml
-services:
-  labelsdb-editor:
-    image: nginx:alpine
-    container_name: labelsdb-editor
-    restart: unless-stopped
-    volumes:
-      - ./:/usr/share/nginx/html:ro
-    ports:
-      - "4377:80"
-```
+File inside repo: `docker-compose.yml`:
 
 ### Usage (once you’ve prepared the `webapp` directory with the static files):
 

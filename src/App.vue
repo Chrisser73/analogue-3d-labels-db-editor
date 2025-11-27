@@ -146,6 +146,8 @@
               :inputName="'filterInput'"
               v-model="searchQuery"
               placeholder="mario,04079B93,52BA66FA"
+              :hint="searchQuery.trim().length ? `${filteredEntries.length} results` : '0 results'"
+              prefixIcon="/assets/search-icon.svg"
             />
           </div>
         </div>
