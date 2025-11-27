@@ -17,6 +17,7 @@ export function useLabelsDb() {
     loadingDb: false,
     inserting: false,
     lastInsertedCrc: null,
+    packingZip: false,
   });
 
   const dbFileInput = ref(null);
@@ -226,6 +227,7 @@ export function useLabelsDb() {
     });
 
     try {
+      state.packingZip = true;
       const blob = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -238,6 +240,8 @@ export function useLabelsDb() {
       console.error(err);
       const msg = err instanceof Error ? err.message : String(err);
       setMessage(`Error creating ZIP: ${msg}`);
+    } finally {
+      state.packingZip = false;
     }
   }
 

@@ -8,6 +8,7 @@
         :loading="labels.state.loadingDb"
         :has-db="hasDbValue"
         :can-load="canLoadDbValue"
+        :packing="labels.state.packingZip"
         @select-db="labels.onDbSelected"
         @load-db="labels.onLoadDb"
         @download-db="labels.downloadDb"

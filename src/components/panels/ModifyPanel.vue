@@ -5,9 +5,11 @@
     </div>
 
     <div v-if="!hasDb" class="no-db-loaded">
+      <!--
       <p class="small-note">
         No database loaded. Please load a labels.db file to view entries.
       </p>
+      -->
     </div>
 
     <div v-else>

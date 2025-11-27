@@ -29,8 +29,18 @@
       <UiButton v-if="hasDb && !loading" type="button" variant="primary" size="md" @click="$emit('download-db')">
         Download modified DB
       </UiButton>
-      <UiButton v-if="hasDb && !loading" type="button" variant="ghost" size="md" @click="$emit('download-images')">
-        Download Images (ZIP)
+      <UiButton
+        v-if="hasDb && !loading"
+        type="button"
+        variant="ghost"
+        size="md"
+        :disabled="packing"
+        @click="$emit('download-images')"
+      >
+        <template v-if="packing">
+          <Spinner /> Packing zip...
+        </template>
+        <template v-else>Download Images (ZIP)</template>
       </UiButton>
     </div>
   </form>
@@ -46,6 +56,7 @@ const props = defineProps({
   loading: Boolean,
   hasDb: Boolean,
   canLoad: Boolean,
+  packing: Boolean,
 });
 
 const emit = defineEmits(["select-db", "load-db", "download-db", "download-images"]);
