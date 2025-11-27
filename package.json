@@ -1,7 +1,7 @@
 {
   "name": "analogue-3d-labels-db-editor",
   "private": true,
-  "description": "A web app for editing Analogue 3D Labels database files.",
+  "description": "A web app for editing Analogue 3D Labels database files. Web App here: http://a3d-tools.christopher-matthes.de",
   "keywords": ["analogue", "3d", "labels", "database", "editor", "vue", "vite", "console", "images"],
   "version": "1.0.0",
   "author": "Christopher Matthes",
