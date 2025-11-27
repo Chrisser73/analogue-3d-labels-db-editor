@@ -49,7 +49,7 @@
           size="sm"
           class="full"
           :disabled="isRemoving(entry.sig)"
-          @click="onRemove(idx)"
+          @click="onRemove(entry.sig)"
         >
           <template v-if="isRemoving(entry.sig)">
             <Spinner /> Deleting...

@@ -7,6 +7,7 @@
         <a href="/assets/labels.db" target="_blank" title="labels.db file download">here</a>.
       </p>
     </div>
+    <small v-if="dbStatus" class="small-note">{{ dbStatus }}</small>
   </div>
 
   <form class="load-grid" @submit.prevent="$emit('load-db')">
@@ -57,6 +58,10 @@ const props = defineProps({
   hasDb: Boolean,
   canLoad: Boolean,
   packing: Boolean,
+  dbStatus: {
+    type: String,
+    default: "",
+  },
 });
 
 const emit = defineEmits(["select-db", "load-db", "download-db", "download-images"]);

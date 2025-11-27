@@ -171,9 +171,10 @@ export function useLabelsDb() {
     }
   }
 
-  function removeEntry(idx) {
+  function removeEntry(sig) {
     if (!state.db) return;
-    const sig = state.db.signatures[idx];
+    const idx = state.db.signatures.findIndex((s) => s === sig);
+    if (idx === -1) return;
 
     const next = new Set(removingSet.value);
     next.add(sig);
