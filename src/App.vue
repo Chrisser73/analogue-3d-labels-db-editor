@@ -45,7 +45,7 @@
             type="submit"
             variant="primary"
             size="md"
-            :disabled="state.loadingDb"
+            :disabled="state.loadingDb || !canLoadDb"
           >
             <template v-if="state.loadingDb">
               <Spinner /> Loading DB...
@@ -113,12 +113,17 @@
               :inputId="'crcInput'"
               :inputName="'crcInput'"
               type="text"
-              placeholder="98E67875"
+              placeholder="03CC04EE"
               required
             />
-            <UiButton type="submit" variant="primary" size="sm"
-              >Insert / Replace</UiButton
+            <UiButton
+              type="submit"
+              variant="primary"
+              size="sm"
+              :disabled="!canInsert"
             >
+              Insert / Replace
+            </UiButton>
           </form>
 
           <div class="stacked search-block">
@@ -243,6 +248,11 @@ const hasDb = computed(() => state.db !== null);
 const countLabel = computed(() =>
   state.db ? `${state.db.signatures.length} entries` : "0 entries"
 );
+const canInsert = computed(() => {
+  const crc = crcValue.value.trim().toUpperCase();
+  return !!selectedImageFile.value && /^[0-9A-F]{8}$/.test(crc);
+});
+const canLoadDb = computed(() => !!selectedDbFile.value);
 const year = new Date().getFullYear();
 
 const cardEntries = computed(() => {

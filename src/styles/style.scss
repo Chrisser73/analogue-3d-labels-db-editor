@@ -302,11 +302,11 @@ code {
 }
 
 .ui-card {
-  background: theme.$bg-panel-soft;
+  background: theme.$bg-card;
   border: 1px solid rgba(88, 93, 140, 0.4);
   border-radius: theme.$radius-md;
-  padding: 10px 10px 12px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
+  padding: 8px 8px 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -368,7 +368,7 @@ code {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
   gap: 14px;
 }
 
