@@ -55,7 +55,7 @@ export function useLabelsDb() {
     const romMap = romNames.value;
     if (!state.db) return [];
 
-    return state.db.signatures.map((sig, idx) => {
+    const entries = state.db.signatures.map((sig, idx) => {
       const key = sig.toString(16).toUpperCase().padStart(8, "0");
       const nameEntry = romMap.get(key) ?? "";
       const [title, regionTag] = splitTitleAndRegion(nameEntry);
@@ -67,6 +67,9 @@ export function useLabelsDb() {
         region: regionTag,
       };
     });
+
+    entries.sort((a, b) => a.display.localeCompare(b.display));
+    return entries;
   });
 
   const filteredEntries = computed(() => {
