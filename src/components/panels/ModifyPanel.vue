@@ -50,6 +50,8 @@
         </UiButton>
       </form>
 
+      <div class="ui-divider"><span></span></div>
+
       <div class="stacked search-block">
         <div class="search-label">
           <span class="ui-label">Search in list</span>

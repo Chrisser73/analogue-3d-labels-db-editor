@@ -2,14 +2,18 @@
   <div class="panel">
     <div class="images-header">
       <h2>Extracted Images</h2>
-      <small><Badge>{{ dbStatus }}</Badge></small>
+      <small
+        ><Badge>{{ dbStatus }}</Badge></small
+      >
     </div>
     <div v-if="loading" class="panel-loading">
       <Spinner class="ui-spinner-lg" />
       <span>Loading database...</span>
     </div>
     <div v-else-if="!hasDb" class="no-db-loaded">
-      <p class="small-note">No database loaded. Please load a labels.db file to view entries.</p>
+      <p class="small-note">
+        No database loaded. Please load a labels.db file to view entries.
+      </p>
     </div>
     <div v-else id="card-grid" class="card-grid">
       <UiCard
@@ -22,13 +26,23 @@
         <div class="card-meta">
           <div class="card-id">
             <span v-html="highlightText(entry.display)"></span>
-            <UiButton size="sm" variant="ghost" class="copy-btn" @click="onCopy(entry.display)">
-              <img class="ui-icon-sm icon-copy" src="/assets/copy-icon.svg" alt="Copy to clipboard" />
+            <UiButton
+              size="sm"
+              variant="ghost"
+              class="copy-btn"
+              @click="onCopy(entry.display)"
+            >
+              <img
+                class="ui-icon-sm icon-copy"
+                src="/assets/copy-icon.svg"
+                alt="Copy to clipboard"
+              />
             </UiButton>
           </div>
           <div class="card-name" v-if="entry.filename">
             <span v-html="highlightText(entry.filename)"></span>
           </div>
+          <div v-if="entry.region" class="card-region">{{ entry.region }}</div>
         </div>
         <UiButton
           variant="destructive"

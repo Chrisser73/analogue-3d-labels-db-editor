@@ -57,11 +57,14 @@ export function useLabelsDb() {
 
     return state.db.signatures.map((sig, idx) => {
       const key = sig.toString(16).toUpperCase().padStart(8, "0");
+      const nameEntry = romMap.get(key) ?? "";
+      const [title, regionTag] = splitTitleAndRegion(nameEntry);
       return {
         sig,
         display: key,
         url: bgraToDataURL(state.db.images[idx]),
-        filename: romMap.get(key) ?? "",
+        filename: title,
+        region: regionTag,
       };
     });
   });
@@ -391,6 +394,16 @@ export function useLabelsDb() {
     const tail = [region, ...extras].filter(Boolean);
     if (!tail.length) return base;
     return `${base} (${tail.join(" / ")})`;
+  }
+
+  function splitTitleAndRegion(name) {
+    const match = name.match(/^(.*?)(\s*\((NTSC-J|NTSC|PAL)\))$/i);
+    if (match) {
+      const title = match[1].trim();
+      const regionTag = match[3].toUpperCase();
+      return [title, regionTag];
+    }
+    return [name, null];
   }
 
   onMounted(() => {
