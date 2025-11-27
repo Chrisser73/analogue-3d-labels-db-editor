@@ -173,11 +173,12 @@
             v-for="(entry, idx) in filteredEntries"
             :key="entry.display"
             :id="entry.display"
+            :class="{ 'card-highlight': highlightSig === entry.display }"
           >
             <img class="card-thumb" :src="entry.url" alt="label preview" />
             <div class="card-meta">
               <div class="card-id">
-                {{ entry.display }}
+                <span v-html="highlightText(entry.display)"></span>
                 <UiButton
                   size="sm"
                   variant="ghost"
@@ -192,7 +193,7 @@
                 </UiButton>
               </div>
               <div class="card-name" v-if="entry.filename">
-                {{ entry.filename }}
+                <span v-html="highlightText(entry.filename)"></span>
               </div>
             </div>
             <UiButton
@@ -262,12 +263,19 @@ const selectedImageFile = ref(null);
 const searchQuery = ref("");
 const romNames = ref(new Map());
 const removingSet = ref(new Set());
+const highlightSig = ref(null);
 
 const message = computed(() => state.message);
 const dbStatus = computed(() => state.status);
 const hasDb = computed(() => state.db !== null);
 const countLabel = computed(() =>
   state.db ? `${state.db.signatures.length} entries` : "0 entries"
+);
+const searchTerms = computed(() =>
+  searchQuery.value
+    .split(",")
+    .map((t) => t.trim())
+    .filter((t) => t.length)
 );
 const canInsert = computed(() => {
   const crc = crcValue.value.trim().toUpperCase();
@@ -294,11 +302,7 @@ const cardEntries = computed(() => {
 });
 
 const filteredEntries = computed(() => {
-  const terms = searchQuery.value
-    .split(",")
-    .map((t) => t.trim())
-    .filter((t) => t.length);
-
+  const terms = searchTerms.value;
   if (!terms.length) return cardEntries.value;
 
   return cardEntries.value.filter((entry) => {
@@ -609,7 +613,36 @@ function scrollToCrc(crc) {
   const target = document.getElementById(crc.toUpperCase());
   if (target) {
     target.scrollIntoView({ behavior: "smooth", block: "center" });
+    highlightSig.value = crc.toUpperCase();
+    setTimeout(() => {
+      if (highlightSig.value === crc.toUpperCase()) {
+        highlightSig.value = null;
+      }
+    }, 1400);
   }
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightText(text) {
+  const terms = searchTerms.value;
+  if (!terms.length) return escapeHtml(text);
+
+  const escapedTerms = terms.map((t) => escapeRegExp(t));
+  const regex = new RegExp(`(${escapedTerms.join("|")})`, "gi");
+  const safe = escapeHtml(text);
+  return safe.replace(regex, '<span class="highlight-text">$1</span>');
 }
 
 async function loadRomNames() {
