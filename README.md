@@ -1,6 +1,6 @@
 # 🎮 Analogue 3D Labels.db File Extractor & Editor
 
-![App Icon](./assets/icon.png)
+![App Icon](./public/assets/icon.png)
 
 ## Web App here: http://a3d-tools.christopher-matthes.de/
 
@@ -11,7 +11,7 @@ _A modern, browser-based editor for Analogue 3D `labels.db` files_
 The **Labels.db File Editor** is a fully client-side web application for viewing, editing, and creating `labels.db` files used by the Analogue 3D.  
 All processing happens locally in your browser – no data is ever uploaded to a server.
 
-![Labels.db File Editor – Preview](./assets/preview.png)
+![Labels.db File Editor – Preview](./public/assets/preview.png)
 
 > **Important safety note**  
 > Always create a backup of your original `labels.db` before overwriting it with the generated `labels_modified.db`.  
