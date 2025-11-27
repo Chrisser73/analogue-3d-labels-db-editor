@@ -128,11 +128,11 @@
 
           <div class="stacked search-block">
             <InputUi
-              label="Search list"
+              label="Search in list"
               :inputId="'filterInput'"
               :inputName="'filterInput'"
               v-model="searchQuery"
-              placeholder="E.g. 04079B93,52BA66FA"
+              placeholder="mario,04079B93,52BA66FA"
             />
           </div>
         </div>
@@ -273,10 +273,23 @@ const cardEntries = computed(() => {
 const filteredEntries = computed(() => {
   const terms = searchQuery.value
     .split(",")
-    .map((t) => t.trim().toUpperCase())
+    .map((t) => t.trim())
     .filter((t) => t.length);
+
   if (!terms.length) return cardEntries.value;
-  return cardEntries.value.filter((entry) => terms.includes(entry.display));
+
+  return cardEntries.value.filter((entry) => {
+    const name = (entry.filename || "").toLowerCase();
+    const id = entry.display.toUpperCase();
+    return terms.some((termRaw) => {
+      const termLower = termRaw.toLowerCase();
+      const isHex = /^[0-9a-f]{1,8}$/i.test(termRaw);
+      if (isHex) {
+        return id.includes(termRaw.toUpperCase());
+      }
+      return name.includes(termLower) || id.includes(termRaw.toUpperCase());
+    });
+  });
 });
 
 function setMessage(text) {
