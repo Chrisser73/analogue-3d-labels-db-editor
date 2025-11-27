@@ -157,10 +157,15 @@ code {
   }
 }
 
+.search-label {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .small-note {
   font-size: 14px;
   color: theme.$muted;
-  margin: 10px 0;
 }
 
 .ui-input-wrap {
@@ -178,6 +183,7 @@ code {
 .ui-hint {
   color: theme.$muted;
   font-size: 13px;
+  font-weight: normal;
 }
 
 .ui-input {
@@ -450,7 +456,7 @@ code {
   }
 }
 
-.highlight-text {
+.hl {
   background: theme.$accent;
   color: #fff;
   padding: 0 2px;
