@@ -73,7 +73,17 @@
         </div>
       </form>
 
-      <Alert v-if="message" variant="success">{{ message }}</Alert>
+      <Alert v-if="message || state.lastInsertedCrc" variant="success">
+        <template v-if="state.lastInsertedCrc">
+          Inserted / updated CRC
+          <a href="#" @click.prevent="scrollToCrc(state.lastInsertedCrc)">{{
+            state.lastInsertedCrc
+          }}</a>
+        </template>
+        <template v-else>
+          {{ message }}
+        </template>
+      </Alert>
     </section>
 
     <section class="layout" id="editor">
@@ -120,9 +130,12 @@
               type="submit"
               variant="primary"
               size="sm"
-              :disabled="!canInsert"
+              :disabled="!canInsert || state.inserting"
             >
-              Insert / Replace
+              <template v-if="state.inserting">
+                <Spinner /> Inserting...
+              </template>
+              <template v-else>Insert / Replace</template>
             </UiButton>
           </form>
 
@@ -186,9 +199,14 @@
               variant="destructive"
               size="sm"
               class="full"
+              :disabled="isRemoving(entry.sig)"
               @click="removeEntry(idx)"
-              >Remove</UiButton
             >
+              <template v-if="isRemoving(entry.sig)">
+                <Spinner /> Deleting...
+              </template>
+              <template v-else>Remove</template>
+            </UiButton>
           </UiCard>
         </div>
       </div>
@@ -232,6 +250,8 @@ const state = reactive({
   message: "",
   status: "No DB loaded",
   loadingDb: false,
+  inserting: false,
+  lastInsertedCrc: null,
 });
 
 const dbFileInput = ref(null);
@@ -241,6 +261,7 @@ const selectedDbFile = ref(null);
 const selectedImageFile = ref(null);
 const searchQuery = ref("");
 const romNames = ref(new Map());
+const removingSet = ref(new Set());
 
 const message = computed(() => state.message);
 const dbStatus = computed(() => state.status);
@@ -250,7 +271,9 @@ const countLabel = computed(() =>
 );
 const canInsert = computed(() => {
   const crc = crcValue.value.trim().toUpperCase();
-  return !!selectedImageFile.value && /^[0-9A-F]{8}$/.test(crc);
+  const file =
+    selectedImageFile.value || imageInput.value?.inputEl?.files?.[0] || null;
+  return !!file && /^[0-9A-F]{8}$/.test(crc);
 });
 const canLoadDb = computed(() => !!selectedDbFile.value);
 const year = new Date().getFullYear();
@@ -292,8 +315,13 @@ const filteredEntries = computed(() => {
   });
 });
 
+function isRemoving(sig) {
+  return removingSet.value.has(sig);
+}
+
 function setMessage(text) {
   state.message = text || "";
+  state.lastInsertedCrc = null;
 }
 
 function onDbSelected(file) {
@@ -332,7 +360,8 @@ async function onAdd() {
     return;
   }
 
-  const imgFile = selectedImageFile.value;
+  const imgFile =
+    selectedImageFile.value || imageInput.value?.inputEl?.files?.[0] || null;
   const crc = crcValue.value.trim().toUpperCase().replace(/^0X/, "");
 
   if (!imgFile || crc.length !== 8 || !/^[0-9A-F]{8}$/.test(crc)) {
@@ -341,6 +370,7 @@ async function onAdd() {
   }
 
   try {
+    state.inserting = true;
     const bgra = await pngFileToBGRA(imgFile);
     const sig = parseInt(crc, 16) >>> 0;
 
@@ -352,7 +382,8 @@ async function onAdd() {
       state.db.images[idx] = bgra;
     }
 
-    setMessage(`Inserted / updated CRC ${crc}`);
+    state.lastInsertedCrc = crc;
+    state.message = `Inserted / updated CRC ${crc}`;
     crcValue.value = "";
     if (imageInput.value?.clear) {
       imageInput.value.clear();
@@ -362,14 +393,28 @@ async function onAdd() {
     console.error(err);
     const msg = err instanceof Error ? err.message : String(err);
     setMessage(`Error processing PNG: ${msg}`);
+  } finally {
+    state.inserting = false;
   }
 }
 
 function removeEntry(idx) {
   if (!state.db) return;
-  state.db.signatures.splice(idx, 1);
-  state.db.images.splice(idx, 1);
-  state.status = `${state.db.signatures.length} images`;
+  const sig = state.db.signatures[idx];
+
+  const next = new Set(removingSet.value);
+  next.add(sig);
+  removingSet.value = next;
+
+  setTimeout(() => {
+    state.db.signatures.splice(idx, 1);
+    state.db.images.splice(idx, 1);
+    state.status = `${state.db.signatures.length} images`;
+
+    const updated = new Set(removingSet.value);
+    updated.delete(sig);
+    removingSet.value = updated;
+  }, 0);
 }
 
 function downloadDb() {
@@ -558,6 +603,13 @@ function copyToClipboard(text) {
     ?.writeText(text)
     .then(() => setMessage(`Copied ${text} to clipboard.`))
     .catch(() => setMessage("Could not copy to clipboard."));
+}
+
+function scrollToCrc(crc) {
+  const target = document.getElementById(crc.toUpperCase());
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 }
 
 async function loadRomNames() {
