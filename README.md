@@ -77,6 +77,14 @@ All changes happen **in-memory** until you download the modified file.
 
 ---
 
+### Inject flash card images
+Added ability to inject missing flash card labels like for "SummerCard 64" r "Everdrive 64 X7" by Krikzz.
+Just switch on the flash card you want to add the label to DB and hit "Apply".
+It will auto-detect if one of those entries are already in DB.
+
+
+---
+
 ### Remove existing labels
 
 - Each card in the grid includes a **Remove** button.
