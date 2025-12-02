@@ -272,7 +272,7 @@ code {
 }
 
 .ui-btn-primary {
-  background: linear-gradient(180deg, #6c5ce7, #5748d6);
+  background: theme.$btn-gradient;
   color: #fff;
   box-shadow: 0 3px 10px rgba(108, 92, 231, 0.4);
 }
@@ -347,11 +347,11 @@ code {
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: theme.$btn-gradient;
+  border: 1px solid rgba(108, 92, 231, 0.8);
   border-radius: theme.$radius-md;
   color: theme.$fg;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .ui-alert {
@@ -622,4 +622,43 @@ code {
 
 .search-block {
   margin-top: 30px;
+}
+
+// MEDIA QUERIES
+@media (max-width: 640px) {
+  body {
+    padding: 20px 8px 20px;
+  }
+
+  .hero-left {
+    align-items: flex-start;
+
+    .logo {
+      margin-top: 8px;
+    }
+  }
+
+  .ui-btn-md {
+    padding: 12px 16px;
+  }
+
+  .ui-dropzone {
+    padding: 8px;
+    min-height: 100px;
+  }
+
+  .panel {
+    padding: 8px 10px 10px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+    gap: 8px;
+  }
+
+  .card-thumb {
+    height: 96px;
+    max-height: 96px;
+    width: calc(96px * 74 / 86);
+  }
 }
