@@ -256,6 +256,51 @@ export function useLabelsDb() {
       .catch(() => setMessage("Could not copy to clipboard."));
   }
 
+  async function injectPresetEntries(presets = []) {
+    if (!state.db) {
+      setMessage("No DB loaded - please load labels.db first.");
+      return;
+    }
+
+    const toAdd = presets
+      .filter((p) => p?.crc && p?.asset)
+      .map((p) => ({
+        crc: p.crc.toUpperCase(),
+        asset: p.asset,
+        name: p.name ?? p.crc.toUpperCase(),
+      }));
+
+    const existing = new Set(
+      state.db.signatures.map((s) => s.toString(16).toUpperCase().padStart(8, "0"))
+    );
+    const pending = toAdd.filter((p) => !existing.has(p.crc));
+
+    if (!pending.length) {
+      setMessage("Selected entries are already present.");
+      return;
+    }
+
+    try {
+      for (const entry of pending) {
+        const sig = parseInt(entry.crc, 16) >>> 0;
+        const resp = await fetch(entry.asset);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const blob = await resp.blob();
+        const file = new File([blob], `${entry.crc}.png`, { type: blob.type || "image/png" });
+        const bgra = await pngFileToBGRA(file);
+        state.db.signatures.push(sig);
+        state.db.images.push(bgra);
+      }
+      state.status = `${state.db.signatures.length} images loaded`;
+      state.message = `Injected ${pending.length} quick-fix entr${pending.length === 1 ? "y" : "ies"}.`;
+      state.lastInsertedCrc = pending[pending.length - 1].crc;
+    } catch (err) {
+      console.error("Failed to inject preset entries", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      setMessage(`Could not inject presets: ${msg}`);
+    }
+  }
+
   function scrollToCrc(crc) {
     const target = document.getElementById(crc.toUpperCase());
     if (target) {
@@ -452,6 +497,7 @@ export function useLabelsDb() {
     downloadDb,
     downloadImages,
     copyToClipboard,
+    injectPresetEntries,
     scrollToCrc,
     isRemoving,
     highlightText,

@@ -45,6 +45,7 @@
 
       <ExtractedPanel
         :entries="filteredEntriesValue"
+        :all-entries="allEntriesValue"
         :has-db="hasDbValue"
         :loading="labels.state.loadingDb"
         :db-status="dbStatusValue"
@@ -52,6 +53,8 @@
         :is-removing="labels.isRemoving"
         :on-remove="labels.removeEntry"
         :on-copy="labels.copyToClipboard"
+        :on-inject-quick-fix="labels.injectPresetEntries"
+        :rom-map="labels.romNames"
         :highlight-text="labels.highlightText"
       />
     </section>
@@ -73,6 +76,7 @@ import { computed } from "vue";
 const labels = useLabelsDb();
 const searchQueryValue = computed(() => labels.searchQuery.value ?? "");
 const filteredEntriesValue = computed(() => labels.filteredEntries.value ?? []);
+const allEntriesValue = computed(() => labels.cardEntries.value ?? []);
 const hasDbValue = computed(() => labels.hasDb.value ?? false);
 const canLoadDbValue = computed(() => labels.canLoadDb.value ?? false);
 const canInsertValue = computed(() => labels.canInsert.value ?? false);
