@@ -491,6 +491,25 @@ code {
   padding: 4px 6px;
 }
 
+.copy-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.copy-tooltip {
+  position: absolute;
+  right: 0;
+  top: -24px;
+  background: white;
+  border: 1px solid theme.$bg-panel-soft;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: theme.$bg;
+  white-space: nowrap;
+}
+
 #copyright {
   display: flex;
   flex-direction: column;

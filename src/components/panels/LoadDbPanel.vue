@@ -3,11 +3,17 @@
     <div>
       <h2>Load Database File</h2>
       <p class="small-note">
-        Load your existing <code>labels.db</code> so you can view and edit its entries locally in your browser or use the one from
-        <a href="/assets/labels.db" target="_blank" title="labels.db file download">here</a>.
+        Load your existing <code>labels.db</code> so you can view and edit its
+        entries locally in your browser or use the one from
+        <a
+          href="/assets/labels.db"
+          target="_blank"
+          title="labels.db file download"
+          >here</a
+        >.
       </p>
     </div>
-    <small v-if="dbStatus" class="small-note">{{ dbStatus }}</small>
+    <!-- <small v-if="dbStatus" class="small-note">{{ dbStatus }}</small> -->
   </div>
 
   <form class="load-grid" @submit.prevent="$emit('load-db')">
@@ -21,13 +27,22 @@
       @select="onSelect"
     />
     <div class="button-row">
-      <UiButton type="submit" variant="primary" size="md" :disabled="loading || !localCanLoad">
-        <template v-if="loading">
-          <Spinner /> Loading DB...
-        </template>
+      <UiButton
+        type="submit"
+        variant="primary"
+        size="md"
+        :disabled="loading || !localCanLoad"
+      >
+        <template v-if="loading"> <Spinner /> Loading DB... </template>
         <template v-else>Load DB</template>
       </UiButton>
-      <UiButton v-if="hasDb && !loading" type="button" variant="primary" size="md" @click="$emit('download-db')">
+      <UiButton
+        v-if="hasDb && !loading"
+        type="button"
+        variant="primary"
+        size="md"
+        @click="$emit('download-db')"
+      >
         Download modified DB
       </UiButton>
       <UiButton
@@ -38,9 +53,7 @@
         :disabled="packing"
         @click="$emit('download-images')"
       >
-        <template v-if="packing">
-          <Spinner /> Packing zip...
-        </template>
+        <template v-if="packing"> <Spinner /> Packing zip... </template>
         <template v-else>Download Images (ZIP)</template>
       </UiButton>
     </div>
@@ -64,7 +77,12 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["select-db", "load-db", "download-db", "download-images"]);
+const emit = defineEmits([
+  "select-db",
+  "load-db",
+  "download-db",
+  "download-images",
+]);
 
 const hasLocalFile = ref(false);
 const localCanLoad = computed(() => hasLocalFile.value || !!props.canLoad);

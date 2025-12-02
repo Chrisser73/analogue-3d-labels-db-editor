@@ -26,18 +26,23 @@
         <div class="card-meta">
           <div class="card-id">
             <span v-html="highlightText(entry.display)"></span>
-            <UiButton
-              size="sm"
-              variant="ghost"
-              class="copy-btn"
-              @click="onCopy(entry.display)"
-            >
-              <img
-                class="ui-icon-sm icon-copy"
-                src="/assets/copy-icon.svg"
-                alt="Copy to clipboard"
-              />
-            </UiButton>
+            <div class="copy-wrap">
+              <UiButton
+                size="sm"
+                variant="ghost"
+                class="copy-btn"
+                @click="handleCopy(entry.display)"
+              >
+                <img
+                  class="ui-icon-sm icon-copy"
+                  src="/assets/copy-icon.svg"
+                  alt="Copy to clipboard"
+                />
+              </UiButton>
+              <span v-if="isCopied(entry.display)" class="copy-tooltip"
+                >Copied</span
+              >
+            </div>
           </div>
           <div class="card-name" v-if="entry.filename">
             <span v-html="highlightText(entry.filename)"></span>
@@ -62,7 +67,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import Badge from "../ui/Badge.vue";
 import Spinner from "../ui/Spinner.vue";
 import UiButton from "../ui/Button.vue";
@@ -102,4 +107,19 @@ const props = defineProps({
 });
 
 const safeEntries = computed(() => props.entries || []);
+
+const copied = ref(new Map());
+const isCopied = (id) => copied.value.has(id);
+
+function handleCopy(text) {
+  props.onCopy?.(text);
+  const next = new Map(copied.value);
+  next.set(text, true);
+  copied.value = next;
+  setTimeout(() => {
+    const cleared = new Map(copied.value);
+    cleared.delete(text);
+    copied.value = cleared;
+  }, 500);
+}
 </script>
