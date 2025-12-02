@@ -1,4 +1,4 @@
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import JSZip from "jszip";
 
 const HEADER_SIZE = 0x100;
@@ -213,8 +213,12 @@ export function useLabelsDb() {
       return;
     }
 
+    state.packingZip = true;
+    await nextTick(); // render spinner before heavy work starts
+
     if (!JSZip) {
       setMessage("JSZip not found - make sure it is installed.");
+      state.packingZip = false;
       return;
     }
 
@@ -228,7 +232,6 @@ export function useLabelsDb() {
     });
 
     try {
-      state.packingZip = true;
       const blob = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
