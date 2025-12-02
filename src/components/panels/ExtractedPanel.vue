@@ -227,7 +227,7 @@ const isPresent = (crc) => presentSet.value.has(crc.toUpperCase());
 
 const selected = ref([]);
 const applying = ref(false);
-const collapsibleOpen = ref(true);
+const collapsibleOpen = ref(false);
 
 const hasSelection = computed(() =>
   selected.value.some((crc) => !isPresent(crc))
