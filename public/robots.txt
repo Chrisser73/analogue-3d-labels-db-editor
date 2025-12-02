@@ -1,0 +1,9 @@
+# robots.txt for analogue-3d-labels-db-editor
+# Default: allow crawling of all public assets.
+
+User-agent: *
+Allow: /
+
+# Disallow typical build and tooling directories (not exposed in production, kept for clarity)
+Disallow: /node_modules/
+Disallow: /dist/
