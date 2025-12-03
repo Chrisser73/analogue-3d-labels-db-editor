@@ -35,7 +35,8 @@
                 v-for="item in quickFixOptions"
                 :key="item.crc"
                 class="quick-fix-option"
-                @click="toggleSelect(item.crc)"
+                :class="{ disabled: isPresent(item.crc) || applying }"
+                @click.stop.prevent="toggleSelect(item.crc)"
               >
                 <button
                   type="button"
@@ -44,7 +45,7 @@
                     on: selected.includes(item.crc),
                     disabled: isPresent(item.crc) || applying,
                   }"
-                  @click.stop="toggleSelect(item.crc)"
+                  @click.stop.prevent="toggleSelect(item.crc)"
                   :disabled="isPresent(item.crc) || applying"
                 >
                   <span class="switch-handle"></span>
