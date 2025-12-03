@@ -819,4 +819,9 @@ code {
     max-height: 96px;
     width: calc(96px * 74 / 86);
   }
+
+  .quick-fix-options-row {
+    flex-direction: column;
+    gap: 12px;
+  }
 }
