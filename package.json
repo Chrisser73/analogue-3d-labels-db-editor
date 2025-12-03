@@ -1,12 +1,20 @@
 {
   "name": "analogue-3d-labels-db-editor",
   "private": true,
-  "description": "A web app for editing Analogue 3D Labels database files. Web App here: https://a3d-tools.online",
-  "keywords": ["analogue", "3d", "labels", "database", "editor", "vue", "vite", "console", "images"],
-  "version": "1.0.0",
+  "description": "App for editing Analogue 3D Labels database files. Web App here: https://a3d-tools.online",
+  "keywords": ["analogue", "3d", "labels", "database", "editor", "vue", "vite", "console", "images", "electron", "app", "tools", "cross-platform"],
+  "version": "1.1.0",
   "author": "Christopher Matthes",
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chrisser73/analogue-3d-labels-db-editor.git"
+  },
+  "homepage": "https://a3d-tools.online",
+  "engines": {
+    "node": ">=25.2.1"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -20,5 +28,6 @@
     "@vitejs/plugin-vue": "^5.2.4",
     "sass": "^1.94.2",
     "vite": "^5.4.21"
-  }
+  },
+  "sideEffects": false
 }
