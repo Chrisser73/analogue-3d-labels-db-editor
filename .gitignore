@@ -7,6 +7,3 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-lock.yaml
 .vscode
-release
-goreleaser_dist
-src-tauri/target
