@@ -79,12 +79,13 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import Badge from "../ui/Badge.vue";
 import QuickFixSection from "./QuickFixSection.vue";
 import Spinner from "../ui/Spinner.vue";
 import UiButton from "../ui/Button.vue";
 import UiCard from "../ui/Card.vue";
+import { useCopyIndicator } from "../../composables/useCopyIndicator";
 
 const props = defineProps({
   entries: {
@@ -133,18 +134,10 @@ const props = defineProps({
 
 const safeEntries = computed(() => props.entries || []);
 
-const copied = ref(new Map());
-const isCopied = (id) => copied.value.has(id);
+const { isCopied, flashCopy } = useCopyIndicator();
 
 function handleCopy(text) {
   props.onCopy?.(text);
-  const next = new Map(copied.value);
-  next.set(text, true);
-  copied.value = next;
-  setTimeout(() => {
-    const cleared = new Map(copied.value);
-    cleared.delete(text);
-    copied.value = cleared;
-  }, 500);
+  flashCopy(text);
 }
 </script>

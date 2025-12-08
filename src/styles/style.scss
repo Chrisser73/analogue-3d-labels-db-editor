@@ -274,7 +274,7 @@ code {
 .ui-btn-primary {
   background: theme.$btn-gradient;
   color: #fff;
-  box-shadow: 0 3px 10px rgba(108, 92, 231, 0.4);
+  box-shadow: theme.$btn-gradient-fade;
 }
 
 .ui-btn-outline {
@@ -548,7 +548,8 @@ code {
     cursor: not-allowed;
     padding: 4px 32px 4px 8px;
 
-    .switch, .quick-fix-label {
+    .switch,
+    .quick-fix-label {
       opacity: 0.45;
       cursor: not-allowed;
     }
@@ -671,6 +672,189 @@ code {
   font-size: 11px;
   color: theme.$bg;
   white-space: nowrap;
+}
+
+.rom-search {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rom-search-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rom-search-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: theme.$fg;
+}
+
+.rom-search-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: theme.$radius-md;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: theme.$muted;
+  font-size: 13px;
+}
+
+.rom-command {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  border: 0;
+}
+
+.rom-command-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 8px 12px;
+  border: 1px solid rgba(88, 93, 140, 0.35);
+  background: theme.$bg-input;
+  border-radius: theme.$radius-md;
+  z-index: 20;
+
+  &:focus-within {
+    box-shadow: theme.$btn-gradient-fade;
+    border-color: theme.$accent;
+  }
+
+  img {
+    width: 18px;
+    height: 18px;
+    filter: invert(45%);
+  }
+
+  .rom-command-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: theme.$fg;
+    font-size: 14px;
+
+    &:placeholder {
+      color: theme.$muted;
+    }
+  }
+}
+
+.rom-command-loader {
+  display: inline-flex;
+  align-items: center;
+}
+
+.rom-command-list {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(13, 14, 20, 0.8);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  margin-top: -16px;
+  z-index: 10;
+}
+
+.rom-command-hint {
+  margin: 0;
+  padding: 24px 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(8, 9, 14, 0.9);
+  color: theme.$muted;
+  font-size: 13px;
+}
+.rom-command-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.rom-command-head,
+.rom-command-item {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1.2fr auto;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.rom-command-head {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: theme.$muted;
+  background: rgba(8, 9, 14, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rom-command-item {
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.rom-command-item:last-child {
+  border-bottom: none;
+}
+
+// .rom-command-item.active {
+//   background: rgba(108, 92, 231, 0.08);
+//   border-color: rgba(108, 92, 231, 0.35);
+// }
+
+.rom-command-item:focus-visible {
+  outline: 2px solid theme.$accent;
+  outline-offset: 2px;
+  background: rgba(108, 92, 231, 0.08);
+}
+
+.rom-crc {
+  font-family: monospace;
+  color: theme.$accent-strong;
+  background: rgba(108, 92, 231, 0.14);
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(108, 92, 231, 0.35);
+  width: fit-content;
+}
+
+.rom-title {
+  color: theme.$fg;
+  font-size: 13px;
+}
+
+.rom-region {
+  font-size: 12px;
+  color: theme.$muted;
+  border: 1px solid rgba(108, 92, 231, 0.35);
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: rgba(108, 92, 231, 0.08);
+  width: fit-content;
+}
+
+.rom-region.muted {
+  border-color: transparent;
+  background: transparent;
+  color: theme.$muted;
+}
+
+.rom-copy {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rom-command-empty {
+  padding: 12px;
+  text-align: center;
+  color: theme.$muted;
 }
 
 #copyright {
@@ -808,6 +992,10 @@ code {
 
   .panel {
     padding: 8px 10px 10px;
+  }
+
+  .rom-command {
+    padding: 0;
   }
 
   .card-grid {

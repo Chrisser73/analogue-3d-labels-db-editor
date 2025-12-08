@@ -28,6 +28,11 @@
       </Alert>
     </section>
 
+    <RomSignatureSearch
+      :rom-map="labels.romNames"
+      :on-copy="labels.copyToClipboard"
+    />
+
     <section class="layout" id="editor">
       <ModifyPanel
         :has-db="hasDbValue"
@@ -70,6 +75,7 @@ import HeaderBar from "./components/layout/HeaderBar.vue";
 import LoadDbPanel from "./components/panels/LoadDbPanel.vue";
 import ModifyPanel from "./components/panels/ModifyPanel.vue";
 import ExtractedPanel from "./components/panels/ExtractedPanel.vue";
+import RomSignatureSearch from "./components/panels/RomSignatureSearch.vue";
 import { useLabelsDb } from "./composables/useLabelsDb";
 import { computed } from "vue";
 

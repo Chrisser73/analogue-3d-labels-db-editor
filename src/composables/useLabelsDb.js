@@ -1,5 +1,11 @@
 import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import JSZip from "jszip";
+import {
+  fetchRomMap,
+  highlightWithTerms,
+  parseSearchTerms,
+  splitTitleAndRegion,
+} from "../utils/romSearch";
 
 const HEADER_SIZE = 0x100;
 const INDEX_START = 0x100;
@@ -37,12 +43,7 @@ export function useLabelsDb() {
   const countLabel = computed(() =>
     state.db ? `${state.db.signatures.length} entries` : "0 entries"
   );
-  const searchTerms = computed(() =>
-    searchQuery.value
-      .split(",")
-      .map((t) => t.trim())
-      .filter((t) => t.length)
-  );
+  const searchTerms = computed(() => parseSearchTerms(searchQuery.value));
   const canInsert = computed(() => {
     const crc = crcValue.value.trim().toUpperCase();
     const file =
@@ -318,148 +319,17 @@ export function useLabelsDb() {
     return removingSet.value.has(sig);
   }
 
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
-  function escapeRegExp(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
   function highlightText(text) {
-    const terms = searchTerms.value;
-    if (!terms.length) return escapeHtml(text);
-
-    const escapedTerms = terms.map((t) => escapeRegExp(t));
-    const regex = new RegExp(`(${escapedTerms.join("|")})`, "gi");
-    const safe = escapeHtml(text);
-    return safe.replace(regex, '<span class="hl">$1</span>');
+    return highlightWithTerms(text, searchTerms.value);
   }
 
   async function loadRomNames() {
-    let csv = "";
     try {
-      const resp = await fetch("/assets/rom_signatures.csv");
-      csv = await resp.text();
+      const map = await fetchRomMap();
+      romNames.value = map;
     } catch (err) {
-      console.error("Failed to fetch rom signatures, trying import fallback", err);
-      try {
-        const mod = await import("../data/rom_signatures.csv?raw");
-        csv = mod.default || "";
-      } catch (e) {
-        console.error("Fallback import for rom signatures failed", e);
-        return;
-      }
+      console.error("Failed to load rom signatures", err);
     }
-
-    if (!csv) return;
-
-    const lines = csv.split(/\r?\n/).filter((l) => l.trim().length > 0);
-    const map = new Map();
-    for (let i = 1; i < lines.length; i += 1) {
-      const line = lines[i];
-      const parsed = line.match(/"([^"]+)"\s*,\s*"([0-9A-Fa-f]{8})"/);
-      if (!parsed) continue;
-      const rawName = parsed[1];
-      const sig = parsed[2].toUpperCase();
-      if (map.has(sig)) continue; // drop duplicate signatures
-      map.set(sig, cleanRomName(rawName));
-    }
-    romNames.value = map;
-  }
-
-  function cleanRomName(raw) {
-    const noExt = raw.replace(/\.[a-z0-9]{2,4}$/i, "");
-    const lowerFull = noExt.toLowerCase();
-
-    const segments = [...noExt.matchAll(/\(([^)]+)\)/g)].map((m) =>
-      (m[1] || "").trim().toLowerCase()
-    );
-
-    let region = null;
-    const extras = [];
-
-    const markRegion = (code) => {
-      if (region) return;
-      region = code;
-    };
-
-    segments.forEach((lower) => {
-      if (!lower) return;
-      if (lower.includes("proto")) extras.push("Proto");
-      else if (lower.includes("aftermarket")) extras.push("Aftermarket");
-      else if (lower.includes("unl") || lower.includes("unlicensed")) extras.push("UNL");
-      else if (lower.includes("demo")) extras.push("Demo");
-      else if (lower.includes("ntsc-j") || lower.includes("japan")) markRegion("NTSC-J");
-      else if (
-        lower === "ntsc" ||
-        lower.includes("usa") ||
-        lower.includes("u.s.a") ||
-        lower.includes("north america")
-      )
-        markRegion("NTSC");
-      else if (
-        lower === "pal" ||
-        lower.includes("europe") ||
-        lower.includes("australia") ||
-        lower.includes("germany") ||
-        lower.includes("france") ||
-        lower.includes("spain") ||
-        lower.includes("italy") ||
-        lower.includes("uk") ||
-        lower.includes("england")
-      )
-        markRegion("PAL");
-      // ignore rev/version tags
-    });
-
-    // fallback detection from full string
-    if (!region && (lowerFull.includes("ntsc-j") || lowerFull.includes("japan"))) {
-      markRegion("NTSC-J");
-    }
-    if (
-      !region &&
-      (lowerFull.includes("ntsc") ||
-        lowerFull.includes("usa") ||
-        lowerFull.includes("u.s.a") ||
-        lowerFull.includes("north america"))
-    ) {
-      markRegion("NTSC");
-    }
-    if (
-      !region &&
-      (lowerFull.includes("pal") ||
-        lowerFull.includes("europe") ||
-        lowerFull.includes("australia") ||
-        lowerFull.includes("germany") ||
-        lowerFull.includes("france") ||
-        lowerFull.includes("spain") ||
-        lowerFull.includes("italy") ||
-        lowerFull.includes("uk") ||
-        lowerFull.includes("england"))
-    ) {
-      markRegion("PAL");
-    }
-
-    const base = noExt.replace(/\s*\([^)]*\)/g, "").trim().replace(/\s+/g, " ");
-    const tail = [region, ...extras].filter(Boolean);
-    if (!tail.length) return base;
-    return `${base} (${tail.join(" / ")})`;
-  }
-
-  function splitTitleAndRegion(name) {
-    const match = name.match(/^(.*?)(\s*\((NTSC-J|NTSC|PAL)\))$/i);
-    if (match) {
-      const title = match[1].trim();
-      const regionTag = match[3].toUpperCase();
-      return [title, regionTag];
-    }
-    return [name, null];
   }
 
   onMounted(() => {
