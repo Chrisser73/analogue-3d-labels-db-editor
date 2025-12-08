@@ -23,6 +23,15 @@
         @input="ensureMap"
         @keydown="onKeydown"
       />
+      <button
+        v-if="query.trim().length"
+        type="button"
+        class="rom-clear"
+        @click="clearQuery"
+        aria-label="Clear search"
+      >
+        <img src="/assets/cross-circle.svg" alt="" />
+      </button>
       <span v-if="loading" class="rom-command-loader">
         <Spinner class="ui-spinner-sm" />
       </span>
@@ -103,7 +112,7 @@ const props = defineProps({
   },
 });
 
-const placeholder = "Not in List? Search for CRC in full database...";
+const placeholder = "Not in list? Search for CRC in rom database...";
 const query = ref("");
 const debouncedQuery = ref("");
 const localMap = ref(new Map());
@@ -176,6 +185,16 @@ function copy(crc) {
   if (props.onCopy) props.onCopy(crc);
   else navigator.clipboard?.writeText(crc).catch(() => {});
   flashCopy(crc);
+}
+
+function clearQuery() {
+  query.value = "";
+  debouncedQuery.value = "";
+  activeIndex.value = -1;
+  if (typeof window !== "undefined") {
+    const el = document.getElementById("searchCrc");
+    el?.focus();
+  }
 }
 
 function onKeydown(event) {

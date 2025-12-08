@@ -196,6 +196,11 @@ code {
   font-size: 14px;
   outline: none;
   transition: border-color 120ms ease, box-shadow 120ms ease;
+
+  &:focus {
+    border-color: theme.$accent;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
+  }
 }
 
 .ui-input.with-icon {
@@ -219,9 +224,24 @@ code {
   filter: invert(80%);
 }
 
-.ui-input:focus {
-  border-color: theme.$accent;
-  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
+.ui-input-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 16px;
+    height: 16px;
+    filter: invert(80%);
+  }
 }
 
 .stacked {
@@ -727,11 +747,27 @@ code {
   z-index: 20;
 
   &:focus-within {
-    box-shadow: theme.$btn-gradient-fade;
     border-color: theme.$accent;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
   }
 
   img {
+    width: 18px;
+    height: 18px;
+    filter: invert(45%);
+  }
+
+  .rom-clear {
+    background: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rom-clear img {
     width: 18px;
     height: 18px;
     filter: invert(45%);

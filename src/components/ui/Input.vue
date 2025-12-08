@@ -23,6 +23,15 @@
         :value="type === 'file' ? null : modelValue"
         @input="onInput"
       />
+      <button
+        v-if="showClear"
+        type="button"
+        class="ui-input-clear"
+        @click="clear"
+        :aria-label="`Clear ${label || 'input'}`"
+      >
+        <img src="/assets/cross-circle.svg" alt="" />
+      </button>
     </div>
   </div>
 </template>
@@ -61,6 +70,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  clearable: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -71,10 +84,27 @@ const fallbackId = `dropzone-${uid}`;
 
 const inputId = computed(() => props.inputId || fallbackId);
 const inputName = computed(() => props.inputName || inputId.value);
+const showClear = computed(
+  () =>
+    props.clearable &&
+    props.type !== "file" &&
+    props.modelValue !== null &&
+    props.modelValue !== undefined &&
+    String(props.modelValue).length > 0
+);
 
 function onInput(event) {
   if (props.type === "file") return;
   emit("update:modelValue", event.target.value);
+}
+
+function clear() {
+  if (props.type === "file") return;
+  emit("update:modelValue", "");
+  if (inputEl.value) {
+    inputEl.value.value = "";
+    inputEl.value.focus();
+  }
 }
 
 defineExpose({ inputEl });

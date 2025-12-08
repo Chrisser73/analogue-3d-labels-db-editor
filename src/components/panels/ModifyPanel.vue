@@ -39,6 +39,7 @@
           @update:model-value="$emit('update:crc', $event)"
           type="text"
           placeholder="03CC04EE"
+          clearable
           required
         />
         <UiButton
@@ -65,6 +66,7 @@
           :model-value="searchQuery"
           @update:model-value="$emit('update:searchQuery', $event)"
           placeholder="mario,04079B93,52BA66FA"
+          clearable
           :hint="''"
           prefixIcon="/assets/search-icon.svg"
         />
