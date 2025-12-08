@@ -820,6 +820,7 @@ code {
   grid-template-columns: 1fr 3fr 1.2fr auto;
   align-items: center;
   padding: 8px 12px;
+  gap: 8px;
 }
 
 .rom-command-head {
@@ -840,15 +841,63 @@ code {
   border-bottom: none;
 }
 
-// .rom-command-item.active {
-//   background: rgba(108, 92, 231, 0.08);
-//   border-color: rgba(108, 92, 231, 0.35);
-// }
+.rom-command-item.active {
+  background: rgba(108, 92, 231, 0.08);
+  border-color: rgba(108, 92, 231, 0.35);
+}
 
 .rom-command-item:focus-visible {
   outline: 2px solid theme.$accent;
   outline-offset: 2px;
   background: rgba(108, 92, 231, 0.08);
+}
+
+.sort-head {
+  display: inline-flex;
+  align-items: center;
+  // justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: theme.$muted;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px 2px;
+  text-align: left;
+
+  &:focus-visible {
+    outline: 2px solid theme.$accent;
+    border-radius: 6px;
+  }
+
+  &.placeholder {
+    cursor: default;
+    min-width: 65px;
+  }
+}
+
+.sort-label {
+  color: theme.$fg;
+}
+
+.sort-icons {
+  display: flex;
+  flex-direction: column;
+}
+
+.sort-icon {
+  width: 18px;
+  margin: -4px 0px;
+  height: 18px;
+  opacity: 0.35;
+  filter: grayscale(1) brightness(0.85);
+  transition: opacity 120ms ease, filter 120ms ease;
+
+  &.active {
+    opacity: 1;
+    filter: none;
+  }
 }
 
 .rom-crc {

@@ -1,16 +1,5 @@
 <template>
   <div class="panel rom-search rom-command">
-    <!-- <div class="rom-search-head">
-      <div class="rom-search-text">
-        <p class="rom-search-title">Search for CRC</p>
-      </div>
-      <div class="rom-search-meta">
-        <span class="rom-search-count">
-          {{ resultSummary }}
-        </span>
-      </div>
-    </div> -->
-
     <div class="rom-command-input">
       <img src="/assets/search-icon.svg" alt="" aria-hidden="true" />
       <input
@@ -44,10 +33,67 @@
 
       <div v-if="limitedResults.length" class="rom-command-table">
         <div class="rom-command-head">
-          <span>CRC</span>
-          <span>Title</span>
-          <span>Region</span>
-          <span>Copy CRC</span>
+          <button
+            type="button"
+            class="sort-head"
+            @click="setSort('crc')"
+            :aria-pressed="sortKey === 'crc'"
+          >
+            <span class="sort-label">CRC</span>
+            <span class="sort-icons">
+              <img
+                src="/assets/sort-up.svg"
+                :class="sortIconClass('crc', 'asc')"
+                alt="Sort CRC ascending"
+              />
+              <img
+                src="/assets/sort-down.svg"
+                :class="sortIconClass('crc', 'desc')"
+                alt="Sort CRC descending"
+              />
+            </span>
+          </button>
+          <button
+            type="button"
+            class="sort-head"
+            @click="setSort('title')"
+            :aria-pressed="sortKey === 'title'"
+          >
+            <span class="sort-label">Title</span>
+            <span class="sort-icons">
+              <img
+                src="/assets/sort-up.svg"
+                :class="sortIconClass('title', 'asc')"
+                alt="Sort title ascending"
+              />
+              <img
+                src="/assets/sort-down.svg"
+                :class="sortIconClass('title', 'desc')"
+                alt="Sort title descending"
+              />
+            </span>
+          </button>
+          <button
+            type="button"
+            class="sort-head"
+            @click="setSort('region')"
+            :aria-pressed="sortKey === 'region'"
+          >
+            <span class="sort-label">Region</span>
+            <span class="sort-icons">
+              <img
+                src="/assets/sort-up.svg"
+                :class="sortIconClass('region', 'asc')"
+                alt="Sort region ascending"
+              />
+              <img
+                src="/assets/sort-down.svg"
+                :class="sortIconClass('region', 'desc')"
+                alt="Sort region descending"
+              />
+            </span>
+          </button>
+          <span class="sort-head placeholder"></span>
         </div>
         <div
           v-for="entry in limitedResults"
@@ -83,7 +129,6 @@
           </div>
         </div>
       </div>
-      <!-- <div v-else class="rom-command-empty"></div> -->
     </div>
   </div>
 </template>
@@ -119,6 +164,8 @@ const localMap = ref(new Map());
 const loading = ref(false);
 const { isCopied, flashCopy } = useCopyIndicator();
 const activeIndex = ref(-1);
+const sortKey = ref("crc");
+const sortDir = ref("asc");
 let debounceHandle = null;
 
 const resolvedMap = computed(() => {
@@ -133,7 +180,30 @@ const entries = computed(() => mapToEntries(resolvedMap.value));
 const filtered = computed(() =>
   filterRomEntries(entries.value, searchTerms.value)
 );
-const limitedResults = computed(() => filtered.value.slice(0, 24));
+const sorted = computed(() => {
+  const list = [...filtered.value];
+  const dir = sortDir.value === "desc" ? -1 : 1;
+  list.sort((a, b) => {
+    const key = sortKey.value;
+    const av =
+      key === "title"
+        ? (a.title || a.name || "").toLowerCase()
+        : key === "region"
+        ? (a.region || "").toUpperCase()
+        : (a.crc || "").toUpperCase();
+    const bv =
+      key === "title"
+        ? (b.title || b.name || "").toLowerCase()
+        : key === "region"
+        ? (b.region || "").toUpperCase()
+        : (b.crc || "").toUpperCase();
+    if (av < bv) return -1 * dir;
+    if (av > bv) return 1 * dir;
+    return 0;
+  });
+  return list;
+});
+const limitedResults = computed(() => sorted.value.slice(0, 24));
 const hasQuery = computed(() => debouncedQuery.value.trim().length > 0);
 
 const listLabel = computed(() => {
@@ -166,6 +236,20 @@ function rowLabel(entry) {
   return `CRC: ${entry.crc}, Title: ${titleText}, ${regionText}`;
 }
 
+function setSort(key) {
+  if (sortKey.value === key) {
+    sortDir.value = sortDir.value === "asc" ? "desc" : "asc";
+  } else {
+    sortKey.value = key;
+    sortDir.value = "asc";
+  }
+}
+
+function sortIconClass(key, dir) {
+  const active = sortKey.value === key && sortDir.value === dir;
+  return `sort-icon ${active ? "active" : "muted"}`;
+}
+
 async function ensureMap() {
   if (loading.value) return;
   const current = resolvedMap.value;
@@ -194,28 +278,6 @@ function clearQuery() {
   if (typeof window !== "undefined") {
     const el = document.getElementById("searchCrc");
     el?.focus();
-  }
-}
-
-function onKeydown(event) {
-  if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-  const total = limitedResults.value.length;
-  if (!total) return;
-
-  if (event.key === "ArrowDown") {
-    activeIndex.value = (activeIndex.value + 1 + total) % total;
-  } else if (event.key === "ArrowUp") {
-    activeIndex.value =
-      activeIndex.value === -1
-        ? total - 1
-        : (activeIndex.value - 1 + total) % total;
-  } else if (event.key === "Enter" && activeIndex.value >= 0) {
-    event.preventDefault();
-    const hit = limitedResults.value[activeIndex.value];
-    if (hit) copy(hit.crc);
   }
 }
 
