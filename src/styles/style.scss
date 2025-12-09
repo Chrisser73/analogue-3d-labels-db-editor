@@ -202,10 +202,20 @@ code {
     border-color: theme.$accent;
     box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
   }
+
+  &.with-icon {
+    padding-left: 36px;
+  }
 }
 
-.ui-input.with-icon {
-  padding-left: 36px;
+.text-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .ui-icon {
+    margin: -4px -6px -4px 0px;
+  }
 }
 
 .ui-input-shell {
@@ -220,7 +230,6 @@ code {
   transform: translateY(-50%);
   width: 14px;
   height: 14px;
-  opacity: 0.8;
   pointer-events: none;
   filter: invert(80%);
 }
@@ -267,12 +276,12 @@ code {
 }
 
 .ui-btn-sm {
-  padding: 7px 12px;
+  padding: 8px 12px;
   font-size: 13px;
 }
 
 .ui-btn-md {
-  padding: 16px 20px;
+  padding: 14px 18px;
   font-size: 14px;
 }
 
@@ -359,6 +368,11 @@ code {
   height: 20px;
 }
 
+.ui-icon-l {
+  width: 24px;
+  height: 24px;
+}
+
 .ui-btn.full {
   width: 100%;
 }
@@ -369,10 +383,14 @@ code {
   gap: 8px;
   padding: 8px 10px;
   background: theme.$btn-gradient;
-  border: 1px solid rgba(108, 92, 231, 0.8);
+  border: 1px solid theme.$border-chip;
   border-radius: theme.$radius-md;
   color: theme.$fg;
-  font-weight: 700;
+
+  &--secondary {
+    background: theme.$bg-card;
+    color: theme.$muted;
+  }
 }
 
 .ui-alert {
@@ -1053,10 +1071,26 @@ code {
   min-height: 530px;
 }
 
+.hide-mobile {
+  display: flex;
+}
+
+.hide-desktop {
+  display: none;
+}
+
 // MEDIA QUERIES
 @media (max-width: 640px) {
   body {
     padding: 20px 8px 20px;
+  }
+
+  .hide-mobile {
+    display: none;
+  }
+
+  .hide-desktop {
+    display: flex;
   }
 
   .hero-left {

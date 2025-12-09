@@ -178,7 +178,7 @@ function isRegionActive(region) {
   padding: 4px 8px;
   border: 1px solid theme.$border-chip;
   border-radius: 999px;
-  background: theme.$bg-panel-soft;
+  background: theme.$bg-panel;
   color: theme.$fg;
   font-size: 12px;
   cursor: pointer;

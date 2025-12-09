@@ -34,7 +34,17 @@
         :disabled="loading || !localCanLoad"
       >
         <template v-if="loading"> <Spinner /> Loading DB... </template>
-        <template v-else>Load DB</template>
+        <template v-else>
+          <div class="text-icon">
+            <span>Load DB</span>
+            <img
+              class="ui-icon ui-icon-md"
+              src="/assets/load-file.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+        </template>
       </UiButton>
       <UiButton
         v-if="hasDb && !loading"
@@ -43,7 +53,24 @@
         size="md"
         @click="$emit('download-db')"
       >
-        Download modified DB
+        <div class="hide-mobile text-icon">
+          <span>Download modified</span>
+          <img
+            class="ui-icon ui-icon-md"
+            src="/assets/download.svg"
+            alt=""
+            aria-hidden="true"
+          />
+        </div>
+        <div class="hide-desktop text-icon">
+          <span>Modified</span>
+          <img
+            class="ui-icon ui-icon-md"
+            src="/assets/download.svg"
+            alt=""
+            aria-hidden="true"
+          />
+        </div>
       </UiButton>
       <UiButton
         v-if="hasDb && !loading"
@@ -54,7 +81,26 @@
         @click="$emit('download-images')"
       >
         <template v-if="packing"> <Spinner /> Packing zip... </template>
-        <template v-else>Download Images (ZIP)</template>
+        <template v-else>
+          <div class="hide-mobile text-icon">
+            <span>Download Images</span>
+            <img
+              class="ui-icon ui-icon-md"
+              src="/assets/zip2.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+          <div class="hide-desktop text-icon">
+            <span>Images</span>
+            <img
+              class="ui-icon ui-icon-md"
+              src="/assets/zip2.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+        </template>
       </UiButton>
     </div>
   </form>

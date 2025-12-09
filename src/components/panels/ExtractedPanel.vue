@@ -3,8 +3,8 @@
     <div class="images-header">
       <h2>Extracted Images</h2>
       <small
-        ><Badge>{{ dbStatus }}</Badge></small
-      >
+        ><Badge :class="'ui-badge--secondary'">{{ dbStatus }}</Badge>
+      </small>
     </div>
     <div v-if="loading" class="panel-loading">
       <Spinner class="ui-spinner-lg" />
