@@ -4,10 +4,7 @@
     <div>
       Visit me on:
       <a href="https://github.com/Chrisser73" target="_blank">Github</a> |
-      <a href="https://christopher-matthes.de" target="_blank">Homepage</a> |
-      <a href="https://www.instagram.com/crysercore/" target="_blank"
-        >Instagram</a
-      >
+      <a href="https://christopher-matthes.de" target="_blank">Homepage</a>
     </div>
     <div>
       <a href="/imprint.html" target="_blank" rel="noreferrer"

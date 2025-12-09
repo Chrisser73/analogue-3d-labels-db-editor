@@ -138,10 +138,10 @@ import { computed, onMounted, ref, watch } from "vue";
 import UiButton from "../ui/Button.vue";
 import Spinner from "../ui/Spinner.vue";
 import {
-  fetchRomMap,
+  fetchRomMapRaw,
   filterRomEntries,
   highlightWithTerms,
-  mapToEntries,
+  mapToEntriesRaw,
   parseSearchTerms,
 } from "../../utils/romSearch";
 import { useCopyIndicator } from "../../composables/useCopyIndicator";
@@ -168,15 +168,12 @@ const sortKey = ref("crc");
 const sortDir = ref("asc");
 let debounceHandle = null;
 
-const resolvedMap = computed(() => {
-  if (props.romMap?.value instanceof Map) return props.romMap.value;
-  if (props.romMap instanceof Map) return props.romMap;
-  return localMap.value;
-});
+// Always use the raw map for this panel to preserve full titles; ignore cleaned maps.
+const resolvedMap = computed(() => localMap.value);
 
 const csvSize = computed(() => resolvedMap.value?.size || 0);
 const searchTerms = computed(() => parseSearchTerms(debouncedQuery.value));
-const entries = computed(() => mapToEntries(resolvedMap.value));
+const entries = computed(() => mapToEntriesRaw(resolvedMap.value));
 const filtered = computed(() =>
   filterRomEntries(entries.value, searchTerms.value)
 );
@@ -252,11 +249,10 @@ function sortIconClass(key, dir) {
 
 async function ensureMap() {
   if (loading.value) return;
-  const current = resolvedMap.value;
-  if (current && current.size > 0) return;
+  if (resolvedMap.value && resolvedMap.value.size > 0) return;
   loading.value = true;
   try {
-    const map = await fetchRomMap();
+    const map = await fetchRomMapRaw();
     if (map instanceof Map) {
       localMap.value = map;
     }

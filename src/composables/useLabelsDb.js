@@ -1,10 +1,12 @@
 import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import JSZip from "jszip";
 import {
+  cleanRomNameForSearch,
   fetchRomMap,
+  fetchRomMapRaw,
+  detectRegion,
   highlightWithTerms,
   parseSearchTerms,
-  splitTitleAndRegion,
 } from "../utils/romSearch";
 
 const HEADER_SIZE = 0x100;
@@ -33,6 +35,7 @@ export function useLabelsDb() {
   const selectedImageFile = ref(null);
   const searchQuery = ref("");
   const romNames = ref(new Map());
+  const romNamesRaw = ref(new Map());
   const removingSet = ref(new Set());
   const highlightSig = ref(null);
   const imageResetKey = ref(0);
@@ -55,18 +58,23 @@ export function useLabelsDb() {
 
   const cardEntries = computed(() => {
     const romMap = romNames.value;
+    const romMapRaw = romNamesRaw.value;
     if (!state.db) return [];
 
     const entries = state.db.signatures.map((sig, idx) => {
       const key = sig.toString(16).toUpperCase().padStart(8, "0");
       const nameEntry = romMap.get(key) ?? "";
-      const [title, regionTag] = splitTitleAndRegion(nameEntry);
+      const rawEntry = romMapRaw.get(key) ?? nameEntry;
+      const displayName = cleanRomNameForSearch(rawEntry || nameEntry || "");
+      const regionTag = detectRegion(rawEntry || nameEntry || "");
+      const searchName = displayName;
       return {
         sig,
         display: key,
         url: bgraToDataURL(state.db.images[idx]),
-        filename: title,
+        filename: displayName,
         region: regionTag,
+        searchName,
       };
     });
 
@@ -79,7 +87,7 @@ export function useLabelsDb() {
     if (!terms.length) return cardEntries.value;
 
     return cardEntries.value.filter((entry) => {
-      const name = (entry.filename || "").toLowerCase();
+      const name = (entry.searchName || entry.filename || "").toLowerCase();
       const id = entry.display.toUpperCase();
       return terms.some((termRaw) => {
         const termLower = termRaw.toLowerCase();
@@ -325,8 +333,12 @@ export function useLabelsDb() {
 
   async function loadRomNames() {
     try {
-      const map = await fetchRomMap();
+      const [map, rawMap] = await Promise.all([
+        fetchRomMap(),
+        fetchRomMapRaw(),
+      ]);
       romNames.value = map;
+      romNamesRaw.value = rawMap instanceof Map ? rawMap : new Map();
     } catch (err) {
       console.error("Failed to load rom signatures", err);
     }

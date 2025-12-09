@@ -104,6 +104,122 @@ export function cleanRomName(raw) {
   return `${base} (${tail.join(" / ")})`;
 }
 
+function isRegionSegment(segmentLower = "") {
+  const seg = segmentLower.trim();
+  if (!seg) return false;
+  return (
+    seg === "pal" ||
+    seg === "ntsc" ||
+    seg === "ntsc-j" ||
+    seg === "ntsc j" ||
+    seg.includes("pal") ||
+    seg.includes("ntsc") ||
+    seg.includes("japan") ||
+    seg.includes("usa") ||
+    seg.includes("u.s.a") ||
+    seg.includes("north america") ||
+    seg.includes("europe") ||
+    seg.includes("australia") ||
+    seg.includes("germany") ||
+    seg.includes("france") ||
+    seg.includes("spain") ||
+    seg.includes("italy") ||
+    seg.includes("uk") ||
+    seg.includes("england")
+  );
+}
+
+function isLanguageSegment(segmentRaw = "") {
+  const parts = segmentRaw
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
+  if (!parts.length) return false;
+  return parts.every((p) => /^[a-z]{2}$/i.test(p));
+}
+
+export function cleanRomNameForSearch(raw) {
+  const noExt = raw.replace(/\.[a-z0-9]{2,4}$/i, "");
+  const base = noExt.replace(/\s*\([^)]*\)/g, "").trim().replace(/\s+/g, " ");
+  const segments = [...noExt.matchAll(/\(([^)]+)\)/g)]
+    .map((m) => (m[1] || "").trim())
+    .filter(Boolean);
+  const keptSegments = segments.filter((seg) => {
+    const lower = seg.toLowerCase();
+    if (isRegionSegment(lower)) return false;
+    if (isLanguageSegment(seg)) return false;
+    return true;
+  });
+  const tail = keptSegments.map((seg) => seg.trim()).filter(Boolean);
+  if (!tail.length) return base;
+  return `${base} ${tail.map((seg) => `(${seg})`).join(" ")}`.trim();
+}
+
+export function detectRegion(name = "") {
+  const lowerFull = name.toLowerCase();
+  const segments = [...name.matchAll(/\(([^)]+)\)/g)].map((m) =>
+    (m[1] || "").trim().toLowerCase()
+  );
+
+  let region = null;
+  const markRegion = (code) => {
+    if (!region) region = code;
+  };
+
+  segments.forEach((lower) => {
+    if (!lower) return;
+    if (lower.includes("ntsc-j") || lower.includes("japan")) markRegion("NTSC-J");
+    else if (
+      lower === "ntsc" ||
+      lower.includes("usa") ||
+      lower.includes("u.s.a") ||
+      lower.includes("north america")
+    )
+      markRegion("NTSC");
+    else if (
+      lower === "pal" ||
+      lower.includes("europe") ||
+      lower.includes("australia") ||
+      lower.includes("germany") ||
+      lower.includes("france") ||
+      lower.includes("spain") ||
+      lower.includes("italy") ||
+      lower.includes("uk") ||
+      lower.includes("england")
+    )
+      markRegion("PAL");
+  });
+
+  if (!region && (lowerFull.includes("ntsc-j") || lowerFull.includes("japan"))) {
+    markRegion("NTSC-J");
+  }
+  if (
+    !region &&
+    (lowerFull.includes("ntsc") ||
+      lowerFull.includes("usa") ||
+      lowerFull.includes("u.s.a") ||
+      lowerFull.includes("north america"))
+  ) {
+    markRegion("NTSC");
+  }
+  if (
+    !region &&
+    (lowerFull.includes("pal") ||
+      lowerFull.includes("europe") ||
+      lowerFull.includes("australia") ||
+      lowerFull.includes("germany") ||
+      lowerFull.includes("france") ||
+      lowerFull.includes("spain") ||
+      lowerFull.includes("italy") ||
+      lowerFull.includes("uk") ||
+      lowerFull.includes("england"))
+  ) {
+    markRegion("PAL");
+  }
+
+  return region;
+}
+
 export function splitTitleAndRegion(name) {
   const match = name.match(/^(.*?)(\s*\((NTSC-J|NTSC|PAL)\))$/i);
   if (match) {
@@ -153,6 +269,45 @@ export async function fetchRomMap() {
   return parseRomCsv(csv);
 }
 
+export function parseRomCsvRaw(csv = "") {
+  if (!csv) return new Map();
+  const lines = csv.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  const map = new Map();
+  for (let i = 1; i < lines.length; i += 1) {
+    const line = lines[i];
+    const parsed = line.match(/"([^"]+)"\s*,\s*"([0-9A-Fa-f]{8})"/);
+    if (!parsed) continue;
+    const rawName = parsed[1];
+    const sig = parsed[2].toUpperCase();
+    if (map.has(sig)) continue;
+    map.set(sig, rawName);
+  }
+  return map;
+}
+
+export async function fetchRomMapRaw() {
+  let csv = "";
+  try {
+    const resp = await fetch("/assets/rom_signatures.csv");
+    if (resp.ok) {
+      csv = await resp.text();
+    }
+  } catch (err) {
+    console.error("Failed to fetch rom signatures, trying import fallback", err);
+  }
+
+  if (!csv) {
+    try {
+      const mod = await import("../data/rom_signatures.csv?raw");
+      csv = mod.default || "";
+    } catch (e) {
+      console.error("Fallback import for rom signatures failed", e);
+    }
+  }
+
+  return parseRomCsvRaw(csv);
+}
+
 export function mapToEntries(mapLike = new Map()) {
   const map =
     mapLike?.value instanceof Map
@@ -166,6 +321,25 @@ export function mapToEntries(mapLike = new Map()) {
       crc: crc.toUpperCase(),
       name,
       title,
+      region,
+    };
+  });
+}
+
+export function mapToEntriesRaw(mapLike = new Map()) {
+  const map =
+    mapLike?.value instanceof Map
+      ? mapLike.value
+      : mapLike instanceof Map
+        ? mapLike
+        : new Map();
+  return Array.from(map.entries()).map(([crc, rawName]) => {
+    const region = detectRegion(rawName);
+    const displayName = cleanRomNameForSearch(rawName);
+    return {
+      crc: crc.toUpperCase(),
+      name: displayName,
+      title: displayName,
       region,
     };
   });
