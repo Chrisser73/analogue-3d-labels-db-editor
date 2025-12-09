@@ -1,4 +1,4 @@
-import { computed, nextTick, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import JSZip from "jszip";
 import {
   cleanRomNameForSearch,
@@ -118,9 +118,26 @@ export function useLabelsDb() {
     );
   });
 
-  function setMessage(text) {
+  function pruneRegionFilters() {
+    const available = new Set(Object.keys(regionCounts.value || {}));
+    if (!available.size) {
+      regionFilters.value = new Set();
+      return;
+    }
+    const next = new Set(
+      [...regionFilters.value].filter((region) => available.has(region))
+    );
+    if (next.size !== regionFilters.value.size) {
+      regionFilters.value = next;
+    }
+  }
+
+  function setMessage(text, options = {}) {
+    const { preserveLastInserted = false } = options;
     state.message = text || "";
-    state.lastInsertedCrc = null;
+    if (!preserveLastInserted) {
+      state.lastInsertedCrc = null;
+    }
   }
 
   function onDbSelected(file) {
@@ -209,6 +226,10 @@ export function useLabelsDb() {
     regionFilters.value = new Set();
   }
 
+  watch(regionCounts, () => {
+    pruneRegionFilters();
+  });
+
   function removeEntry(sig) {
     if (!state.db) return;
     const idx = state.db.signatures.findIndex((s) => s === sig);
@@ -287,10 +308,20 @@ export function useLabelsDb() {
     }
   }
 
-  function copyToClipboard(text) {
+  function copyToClipboard(text, options = {}) {
+    const { setAnchor = true } = options;
+    const crc = (text || "").toString().toUpperCase();
+    const isCrc = /^[0-9A-F]{8}$/.test(crc);
     navigator.clipboard
       ?.writeText(text)
-      .then(() => setMessage(`Copied ${text} to clipboard.`))
+      .then(() => {
+        if (isCrc && setAnchor) {
+          state.lastInsertedCrc = crc;
+          setMessage(`Copied ${crc} to clipboard.`, { preserveLastInserted: true });
+        } else {
+          setMessage(`Copied ${text} to clipboard.`);
+        }
+      })
       .catch(() => setMessage("Could not copy to clipboard."));
   }
 

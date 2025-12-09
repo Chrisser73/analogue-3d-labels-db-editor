@@ -7,12 +7,18 @@
     <div
       class="ui-dropzone"
       :class="{ 'is-drag': isDragOver }"
+      role="button"
+      tabindex="0"
+      :aria-label="dropAriaLabel"
+      :aria-describedby="hintId || undefined"
       @dragover.prevent="onDragOver"
       @dragleave.prevent="onDragLeave"
       @drop.prevent="onDrop"
       @click="openFilePicker"
+      @keydown.enter.prevent="openFilePicker"
+      @keydown.space.prevent="openFilePicker"
     >
-      <div class="drop-text">
+      <div class="drop-text" :id="hintId || undefined">
         <strong v-if="!fileName">Drag & Drop</strong>
         <span v-if="!fileName">or</span>
         <span v-if="!fileName" class="linkish">click to select</span>
@@ -28,6 +34,8 @@
       :name="inputName"
       :accept="accept"
       :required="required"
+      :aria-label="dropAriaLabel"
+      :aria-describedby="hintId || undefined"
       @change="onFileChange"
     />
   </div>
@@ -56,6 +64,12 @@ const fallbackId = `dropzone-${uid}`;
 
 const inputId = computed(() => props.inputId || fallbackId);
 const inputName = computed(() => props.inputName || inputId.value);
+const dropAriaLabel = computed(
+  () => props.label || props.placeholder || "Upload file"
+);
+const hintId = computed(() =>
+  props.hint || props.placeholder ? `${inputId.value}-hint` : null
+);
 
 function onDragOver() {
   isDragOver.value = true;

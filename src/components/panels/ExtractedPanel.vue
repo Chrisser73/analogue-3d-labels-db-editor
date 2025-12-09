@@ -31,7 +31,11 @@
           :id="entry.display"
           :class="{ 'card-highlight': highlightSig === entry.display }"
         >
-          <img class="card-thumb" :src="entry.url" alt="label preview" />
+          <img
+            class="card-thumb"
+            :src="entry.url"
+            :alt="cardAlt(entry)"
+          />
           <div class="card-meta">
             <div class="card-id">
               <span v-html="highlightText(entry.display)"></span>
@@ -139,5 +143,10 @@ const { isCopied, flashCopy } = useCopyIndicator();
 function handleCopy(text) {
   props.onCopy?.(text);
   flashCopy(text);
+}
+
+function cardAlt(entry) {
+  const name = entry?.filename || entry?.display || "Label";
+  return `${name} label preview`;
 }
 </script>

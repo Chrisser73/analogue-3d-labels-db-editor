@@ -85,9 +85,13 @@
             </button>
           </div>
         </div>
-        <a class="clear-filters" @click="$emit('clear-filters')">
+        <button
+          type="button"
+          class="clear-filters"
+          @click="$emit('clear-filters')"
+        >
           Clear filters
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -206,6 +210,10 @@ function isRegionActive(region) {
   display: flex;
   justify-content: flex-end;
   color: theme.$accent-strong;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 
   &:hover {
     text-decoration: underline;

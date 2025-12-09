@@ -15,10 +15,16 @@
         @download-images="labels.downloadImages"
       />
 
-      <Alert v-if="messageValue || labels.state.lastInsertedCrc" variant="success">
+      <Alert
+        v-if="messageValue || labels.state.lastInsertedCrc"
+        variant="success"
+      >
         <template v-if="labels.state.lastInsertedCrc">
-          Inserted / updated CRC
-          <a href="#" @click.prevent="labels.scrollToCrc(labels.state.lastInsertedCrc)">
+          {{ lastCrcLabel }}
+          <a
+            href="#"
+            @click.prevent="labels.scrollToCrc(labels.state.lastInsertedCrc)"
+          >
             {{ labels.state.lastInsertedCrc }}
           </a>
         </template>
@@ -46,7 +52,12 @@
         @select-image="labels.onImageSelected"
         @update:searchQuery="(val) => (labels.searchQuery.value = val)"
         @toggle-region-filter="labels.toggleRegionFilter"
-        @clear-filters="() => { labels.searchQuery.value = ''; labels.clearRegionFilters(); }"
+        @clear-filters="
+          () => {
+            labels.searchQuery.value = '';
+            labels.clearRegionFilters();
+          }
+        "
         @submit="labels.onAdd"
         @update:crc="(val) => (labels.crcValue.value = val)"
         :crc="labels.crcValue.value"
@@ -94,6 +105,13 @@ const dbStatusValue = computed(() => labels.dbStatus.value ?? "");
 const messageValue = computed(() => labels.message.value ?? "");
 const highlightSigValue = computed(() => labels.highlightSig.value ?? null);
 const filteredCount = computed(() =>
-  (searchQueryValue.value || "").trim().length ? filteredEntriesValue.value.length : 0
+  (searchQueryValue.value || "").trim().length
+    ? filteredEntriesValue.value.length
+    : 0
+);
+const lastCrcLabel = computed(() =>
+  (messageValue.value || "").startsWith("Copied")
+    ? "Copied CRC to clipboard:"
+    : "Inserted / updated CRC:"
 );
 </script>

@@ -8,6 +8,7 @@
         type="text"
         class="rom-command-field"
         :placeholder="placeholder"
+        aria-label="Search ROMs by CRC, title, or region"
         @focus="ensureMap"
         @input="ensureMap"
         @keydown="onKeydown"
@@ -157,7 +158,7 @@ const props = defineProps({
   },
 });
 
-const placeholder = "Not in list? Search for CRC in rom database...";
+const placeholder = "Find CRC from database...";
 const query = ref("");
 const debouncedQuery = ref("");
 const localMap = ref(new Map());
@@ -262,7 +263,7 @@ async function ensureMap() {
 }
 
 function copy(crc) {
-  if (props.onCopy) props.onCopy(crc);
+  if (props.onCopy) props.onCopy(crc, { setAnchor: false });
   else navigator.clipboard?.writeText(crc).catch(() => {});
   flashCopy(crc);
 }

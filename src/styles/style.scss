@@ -258,6 +258,10 @@ code {
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  &.search-block {
+    gap: 8px;
+  }
 }
 
 .ui-btn {
