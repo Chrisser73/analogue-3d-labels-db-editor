@@ -24,6 +24,7 @@ body {
 a {
   color: theme.$accent-strong;
   text-decoration: none;
+  cursor: pointer;
 }
 
 a:hover {
@@ -104,7 +105,7 @@ code {
     rgba(20, 22, 32, 0.96)
   );
   border-radius: theme.$radius-lg;
-  border: 1px solid rgba(88, 93, 140, 0.35);
+  border: 1px solid theme.$border-panel;
   padding: 16px 18px 18px;
 }
 
@@ -113,11 +114,11 @@ code {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
-}
 
-.panel-header small {
-  color: theme.$muted;
-  font-size: 12px;
+  small {
+    color: theme.$muted;
+    font-size: 12px;
+  }
 }
 
 .top-panel {
@@ -423,7 +424,7 @@ code {
 
 .card-highlight {
   border-color: theme.$accent;
-  box-shadow: 0px 0px 6px 6px rgba(108, 92, 231, 0.35);
+  box-shadow: 0px 0px 6px 6px theme.$border-chip;
   background-color: rgba(108, 92, 231, 0.1);
   animation: pulse-highlight 2s ease;
 }
@@ -469,7 +470,7 @@ code {
 .card-region {
   font-size: 10px;
   color: theme.$muted;
-  border: 1px solid rgba(108, 92, 231, 0.35);
+  border: 1px solid theme.$border-chip;
   border-radius: 999px;
   padding: 2px 8px;
   display: inline-block;
@@ -741,7 +742,7 @@ code {
   gap: 10px;
   height: 44px;
   padding: 8px 12px;
-  border: 1px solid rgba(88, 93, 140, 0.35);
+  border: 1px solid theme.$border-panel;
   background: theme.$bg-input;
   border-radius: theme.$radius-md;
   z-index: 20;
@@ -843,7 +844,7 @@ code {
 
 .rom-command-item.active {
   background: rgba(108, 92, 231, 0.08);
-  border-color: rgba(108, 92, 231, 0.35);
+  border-color: theme.$border-chip;
 }
 
 .rom-command-item:focus-visible {
@@ -906,7 +907,7 @@ code {
   background: rgba(108, 92, 231, 0.14);
   padding: 4px 8px;
   border-radius: 8px;
-  border: 1px solid rgba(108, 92, 231, 0.35);
+  border: 1px solid theme.$border-chip;
   width: fit-content;
 }
 
@@ -918,7 +919,7 @@ code {
 .rom-region {
   font-size: 12px;
   color: theme.$muted;
-  border: 1px solid rgba(108, 92, 231, 0.35);
+  border: 1px solid theme.$border-chip;
   border-radius: 999px;
   padding: 2px 8px;
   background: rgba(108, 92, 231, 0.08);

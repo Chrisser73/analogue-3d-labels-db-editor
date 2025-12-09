@@ -11,7 +11,8 @@ html {
 body {
   margin: 0;
   padding: 32px 18px 40px;
-  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
+    sans-serif;
   background: radial-gradient(circle at 20% 10%, #202338 0, #05060a 55%);
   color: theme.$fg;
   min-height: 100vh;
@@ -34,8 +35,12 @@ a:hover {
 }
 
 .page-shell {
-  background: linear-gradient(180deg, rgba(34, 36, 49, 0.96), rgba(20, 22, 32, 0.96));
-  border: 1px solid rgba(88, 93, 140, 0.35);
+  background: linear-gradient(
+    180deg,
+    rgba(34, 36, 49, 0.96),
+    rgba(20, 22, 32, 0.96)
+  );
+  border: 1px solid theme.$border-panel;
   border-radius: theme.$radius-lg;
   padding: 22px 22px 26px;
   box-shadow: theme.$shadow-soft;

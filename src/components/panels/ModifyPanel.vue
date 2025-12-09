@@ -70,6 +70,24 @@
           :hint="''"
           prefixIcon="/assets/search-icon.svg"
         />
+        <div class="filters-row" v-if="hasRegions || searchQuery.trim().length">
+          <div v-if="hasRegions" class="region-filters">
+            <button
+              v-for="(count, region) in regionCounts"
+              :key="region"
+              type="button"
+              class="region-filter-badge"
+              :class="{ active: isRegionActive(region) }"
+              @click="$emit('toggle-region-filter', region)"
+            >
+              <span class="region-label">{{ region }}</span>
+              <span class="region-count ui-btn-ghost">{{ count }}</span>
+            </button>
+          </div>
+        </div>
+        <a class="clear-filters" @click="$emit('clear-filters')">
+          Clear filters
+        </a>
       </div>
     </div>
   </div>
@@ -98,15 +116,99 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  regionCounts: {
+    type: Object,
+    default: () => ({}),
+  },
+  activeRegionFilters: {
+    type: Object,
+    default: () => new Set(),
+  },
   crc: {
     type: String,
     default: "",
   },
 });
 
-defineEmits(["select-image", "submit", "update:crc", "update:searchQuery"]);
+defineEmits([
+  "select-image",
+  "submit",
+  "update:crc",
+  "update:searchQuery",
+  "toggle-region-filter",
+  "clear-filters",
+]);
 
 const searchHint = computed(
   () => `${props.searchQuery.trim().length ? props.filteredCount : 0} results`
 );
+
+const hasRegions = computed(
+  () => Object.keys(props.regionCounts || {}).length > 0
+);
+
+function isRegionActive(region) {
+  if (!props.activeRegionFilters) return false;
+  return props.activeRegionFilters.has
+    ? props.activeRegionFilters.has(region)
+    : false;
+}
 </script>
+
+<style scoped lang="scss">
+@use "../../styles/theme";
+
+.filters-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.region-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.region-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid theme.$border-chip;
+  border-radius: 999px;
+  background: theme.$bg-panel-soft;
+  color: theme.$fg;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: theme.$accent-strong;
+  }
+
+  &.active {
+    border-color: theme.$accent;
+    background: theme.$accent-soft;
+    box-shadow: 0 0 0 1px rgba(theme.$accent, 0.4);
+  }
+
+  .region-count {
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+}
+
+.clear-filters {
+  font-size: 12px;
+  display: flex;
+  justify-content: flex-end;
+  color: theme.$accent-strong;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+</style>

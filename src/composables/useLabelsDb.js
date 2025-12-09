@@ -39,6 +39,7 @@ export function useLabelsDb() {
   const removingSet = ref(new Set());
   const highlightSig = ref(null);
   const imageResetKey = ref(0);
+  const regionFilters = ref(new Set());
 
   const message = computed(() => state.message);
   const dbStatus = computed(() => state.status);
@@ -82,7 +83,7 @@ export function useLabelsDb() {
     return entries;
   });
 
-  const filteredEntries = computed(() => {
+  const baseFilteredEntries = computed(() => {
     const terms = searchTerms.value;
     if (!terms.length) return cardEntries.value;
 
@@ -98,6 +99,23 @@ export function useLabelsDb() {
         return name.includes(termLower) || id.includes(termRaw.toUpperCase());
       });
     });
+  });
+
+  const regionCounts = computed(() => {
+    const counts = {};
+    baseFilteredEntries.value.forEach((entry) => {
+      const region = entry.region || "Unknown";
+      counts[region] = (counts[region] || 0) + 1;
+    });
+    return counts;
+  });
+
+  const filteredEntries = computed(() => {
+    const selected = regionFilters.value;
+    if (!selected || !selected.size) return baseFilteredEntries.value;
+    return baseFilteredEntries.value.filter((entry) =>
+      selected.has(entry.region || "Unknown")
+    );
   });
 
   function setMessage(text) {
@@ -178,6 +196,17 @@ export function useLabelsDb() {
     } finally {
       state.inserting = false;
     }
+  }
+
+  function toggleRegionFilter(region) {
+    const next = new Set(regionFilters.value);
+    if (next.has(region)) next.delete(region);
+    else next.add(region);
+    regionFilters.value = next;
+  }
+
+  function clearRegionFilters() {
+    regionFilters.value = new Set();
   }
 
   function removeEntry(sig) {
@@ -360,6 +389,7 @@ export function useLabelsDb() {
     removingSet,
     highlightSig,
     imageResetKey,
+    regionFilters,
     message,
     dbStatus,
     hasDb,
@@ -370,6 +400,10 @@ export function useLabelsDb() {
     year,
     cardEntries,
     filteredEntries,
+    baseFilteredEntries,
+    regionCounts,
+    toggleRegionFilter,
+    clearRegionFilters,
     setMessage,
     onDbSelected,
     onImageSelected,
