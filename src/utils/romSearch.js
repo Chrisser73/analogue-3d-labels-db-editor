@@ -245,15 +245,6 @@ export async function fetchRomMap() {
     console.error("Failed to fetch rom signatures, trying import fallback", err);
   }
 
-  if (!csv) {
-    try {
-      const mod = await import("../data/rom_signatures.csv?raw");
-      csv = mod.default || "";
-    } catch (e) {
-      console.error("Fallback import for rom signatures failed", e);
-    }
-  }
-
   return parseRomCsv(csv);
 }
 
@@ -282,15 +273,6 @@ export async function fetchRomMapRaw() {
     }
   } catch (err) {
     console.error("Failed to fetch rom signatures, trying import fallback", err);
-  }
-
-  if (!csv) {
-    try {
-      const mod = await import("../data/rom_signatures.csv?raw");
-      csv = mod.default || "";
-    } catch (e) {
-      console.error("Fallback import for rom signatures failed", e);
-    }
   }
 
   return parseRomCsvRaw(csv);
