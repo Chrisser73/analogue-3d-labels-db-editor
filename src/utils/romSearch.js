@@ -112,20 +112,8 @@ function isRegionSegment(segmentLower = "") {
     seg === "ntsc" ||
     seg === "ntsc-j" ||
     seg === "ntsc j" ||
-    seg.includes("pal") ||
-    seg.includes("ntsc") ||
-    seg.includes("japan") ||
-    seg.includes("usa") ||
-    seg.includes("u.s.a") ||
-    seg.includes("north america") ||
-    seg.includes("europe") ||
-    seg.includes("australia") ||
-    seg.includes("germany") ||
-    seg.includes("france") ||
-    seg.includes("spain") ||
-    seg.includes("italy") ||
-    seg.includes("uk") ||
-    seg.includes("england")
+    seg === "ntsc-u" ||
+    seg === "ntsc u"
   );
 }
 
