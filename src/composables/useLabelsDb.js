@@ -157,7 +157,7 @@ export function useLabelsDb() {
     try {
       const buf = await selectedDbFile.value.arrayBuffer();
       state.db = parseLabelsDb(buf);
-      state.status = `${state.db.signatures.length} images loaded`;
+      state.status = `${state.db.signatures.length} entries`;
       setMessage("DB loaded successfully.");
     } catch (err) {
       console.error(err);
@@ -317,7 +317,9 @@ export function useLabelsDb() {
       .then(() => {
         if (isCrc && setAnchor) {
           state.lastInsertedCrc = crc;
-          setMessage(`Copied ${crc} to clipboard.`, { preserveLastInserted: true });
+          setMessage(`Copied ${crc} to clipboard.`, {
+            preserveLastInserted: true,
+          });
         } else {
           setMessage(`Copied ${text} to clipboard.`);
         }
@@ -340,7 +342,9 @@ export function useLabelsDb() {
       }));
 
     const existing = new Set(
-      state.db.signatures.map((s) => s.toString(16).toUpperCase().padStart(8, "0"))
+      state.db.signatures.map((s) =>
+        s.toString(16).toUpperCase().padStart(8, "0")
+      )
     );
     const pending = toAdd.filter((p) => !existing.has(p.crc));
 
@@ -355,13 +359,17 @@ export function useLabelsDb() {
         const resp = await fetch(entry.asset);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const blob = await resp.blob();
-        const file = new File([blob], `${entry.crc}.png`, { type: blob.type || "image/png" });
+        const file = new File([blob], `${entry.crc}.png`, {
+          type: blob.type || "image/png",
+        });
         const bgra = await pngFileToBGRA(file);
         state.db.signatures.push(sig);
         state.db.images.push(bgra);
       }
-      state.status = `${state.db.signatures.length} images loaded`;
-      state.message = `Injected ${pending.length} quick-fix entr${pending.length === 1 ? "y" : "ies"}.`;
+      state.status = `${state.db.signatures.length} entries`;
+      state.message = `Injected ${pending.length} quick-fix entr${
+        pending.length === 1 ? "y" : "ies"
+      }.`;
       state.lastInsertedCrc = pending[pending.length - 1].crc;
     } catch (err) {
       console.error("Failed to inject preset entries", err);

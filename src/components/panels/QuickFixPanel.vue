@@ -7,7 +7,7 @@
         @click="collapsibleOpen = !collapsibleOpen"
         :aria-expanded="collapsibleOpen"
       >
-        <span class="quick-fix-title-label">Add flash cart labels</span>
+        <span class="quick-fix-title-label">Add flashcart labels</span>
         <span class="chevron" :class="{ open: collapsibleOpen }">▾</span>
       </button>
       <span v-if="loading" class="quick-fix-spinner"><Spinner /></span>
@@ -85,8 +85,8 @@ const props = defineProps({
 });
 
 const quickFixBase = [
-  { crc: "FFFFFFFE", asset: "/assets/inject-flashcard/FFFFFFFE.png" },
-  { crc: "1C414340", asset: "/assets/inject-flashcard/1C414340.png" },
+  { crc: "FFFFFFFE", asset: "/assets/inject-flashcart/FFFFFFFE.png" },
+  { crc: "1C414340", asset: "/assets/inject-flashcart/1C414340.png" },
 ];
 
 const baseDisplayName = (name) => {
