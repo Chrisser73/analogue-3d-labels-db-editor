@@ -13,16 +13,11 @@
     </div>
 
     <div v-else>
-      <p class="small-note">
-        Add a new image or replace an existing one using its CRC32 cartridge
-        signature.
-      </p>
-
       <form class="stacked" @submit.prevent="$emit('submit')">
         <Dropzone
           :key="imageResetKey"
           label="PNG Image"
-          hint="any size; will be resized to 74x86"
+          info-html="Upload a PNG to add a fresh label image or replace the existing one tied to this cartridge's CRC32 signature. Use any size. It will be resized to 74x86 pixels automatically."
           accept="image/png"
           :inputId="'imageUpload'"
           :inputName="'imageUpload'"
@@ -144,11 +139,11 @@ defineEmits([
 ]);
 
 const searchHint = computed(
-  () => `${props.searchQuery.trim().length ? props.filteredCount : 0} results`
+  () => `${props.searchQuery.trim().length ? props.filteredCount : 0} results`,
 );
 
 const hasRegions = computed(
-  () => Object.keys(props.regionCounts || {}).length > 0
+  () => Object.keys(props.regionCounts || {}).length > 0,
 );
 
 function isRegionActive(region) {

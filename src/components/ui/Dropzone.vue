@@ -1,8 +1,9 @@
 <template>
   <div class="ui-input-wrap">
     <label v-if="label" class="ui-label" :for="inputId">
-      {{ label }}
-      <span v-if="hint" class="ui-hint"> ({{ hint }})</span>
+      <span class="ui-label-text">{{ label }}</span>
+      <InfoPopover v-if="infoHtml" :content-html="infoHtml" />
+      <span v-if="hint" class="ui-hint">({{ hint }})</span>
     </label>
     <div
       class="ui-dropzone"
@@ -43,6 +44,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import InfoPopover from "./InfoPopover.vue";
 
 const props = defineProps({
   label: { type: String, default: "" },
@@ -52,6 +54,7 @@ const props = defineProps({
   inputName: { type: String, default: "" },
   required: { type: Boolean, default: false },
   placeholder: { type: String, default: "Drop a file here" },
+  infoHtml: { type: String, default: "" },
 });
 
 const emit = defineEmits(["select"]);

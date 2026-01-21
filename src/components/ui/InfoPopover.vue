@@ -2,13 +2,18 @@
   <div class="info-popover" ref="root">
     <button
       type="button"
-      class="info-trigger"
+      class="info-trigger ui-btn ui-btn-ghost ui-btn-sm copy-btn"
       :aria-expanded="isOpen"
       aria-haspopup="dialog"
+      aria-label="More info"
       @click.stop="toggle"
-      
+      title="More info"
     >
-      !
+      <img
+        src="/assets/question-icon.svg"
+        alt="More info icon"
+        class="info-icon"
+      />
     </button>
     <transition name="popover-fade">
       <div v-if="isOpen" class="info-content" role="tooltip">
@@ -74,15 +79,12 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border-radius: 999px;
   border: 1px solid theme.$border-chip;
   background: theme.$accent-soft;
-  color: theme.$accent-strong;
-  font-weight: 800;
-  font-size: 12px;
   cursor: pointer;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   transition:
@@ -99,6 +101,13 @@ onBeforeUnmount(() => {
 
   &:active {
     transform: translateY(0);
+  }
+
+  .info-icon {
+    width: 18px;
+    height: 18px;
+    filter: none;
+    pointer-events: none;
   }
 }
 
