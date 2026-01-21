@@ -18,6 +18,7 @@
       <Alert
         v-if="messageValue || labels.state.lastInsertedCrc"
         variant="success"
+        :toast-message="alertToastMessage"
       >
         <template v-if="labels.state.lastInsertedCrc">
           {{ lastCrcLabel }}
@@ -113,5 +114,10 @@ const lastCrcLabel = computed(() =>
   (messageValue.value || "").startsWith("Copied")
     ? "Copied CRC to clipboard:"
     : "Inserted / updated CRC:"
+);
+const alertToastMessage = computed(
+  () => messageValue.value || (labels.state.lastInsertedCrc
+    ? `Inserted / updated CRC ${labels.state.lastInsertedCrc}`
+    : "")
 );
 </script>
