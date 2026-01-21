@@ -32,7 +32,7 @@
         />
         <InputUi
           label="Cartridge Signature"
-          hint="CRC32, 8-digit Hex"
+          info-html='Use the CRC32 hash of the cartridge ROM (8 hex digits).<br/>Look it up via the <a href="#romCommandInput" target="_self">"Database Game Lookup"</a> panel or compute it with your tooling.'
           :inputId="'crcInput'"
           :inputName="'crcInput'"
           :model-value="crc"

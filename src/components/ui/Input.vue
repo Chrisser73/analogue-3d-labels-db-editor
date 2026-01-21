@@ -1,8 +1,9 @@
 <template>
   <div class="ui-input-wrap">
     <label v-if="label" class="ui-label" :for="inputId">
-      {{ label }}
-      <span v-if="hint" class="ui-hint"> ({{ hint }})</span>
+      <span class="ui-label-text">{{ label }}</span>
+      <InfoPopover v-if="infoHtml" :content-html="infoHtml" />
+      <span v-if="hint" class="ui-hint">({{ hint }})</span>
     </label>
     <div class="ui-input-shell">
       <img
@@ -38,6 +39,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import InfoPopover from "./InfoPopover.vue";
 
 defineOptions({
   inheritAttrs: false,
@@ -73,6 +75,10 @@ const props = defineProps({
   clearable: {
     type: Boolean,
     default: false,
+  },
+  infoHtml: {
+    type: String,
+    default: "",
   },
 });
 

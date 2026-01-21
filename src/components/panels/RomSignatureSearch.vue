@@ -1,7 +1,7 @@
 <template>
   <h2 class="rom-search--headline">Database Game Lookup</h2>
   <div class="panel rom-search rom-command">
-    <div class="rom-command-input">
+    <div class="rom-command-input" id="romCommandInput">
       <img src="/assets/search-icon.svg" alt="" aria-hidden="true" />
       <input
         id="searchCrc"

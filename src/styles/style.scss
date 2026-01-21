@@ -184,6 +184,9 @@ code {
   font-size: 14px;
   color: theme.$fg;
   font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .ui-hint {
