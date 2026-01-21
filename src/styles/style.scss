@@ -793,6 +793,11 @@ code {
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  &--headline {
+    margin-bottom: -6px;
+    gap: 0;
+  }
 }
 
 .rom-search-head {

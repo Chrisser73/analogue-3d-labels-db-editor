@@ -1,4 +1,5 @@
 <template>
+  <h2 class="rom-search--headline">Database Game Lookup</h2>
   <div class="panel rom-search rom-command">
     <div class="rom-command-input">
       <img src="/assets/search-icon.svg" alt="" aria-hidden="true" />
@@ -158,7 +159,7 @@ const props = defineProps({
   },
 });
 
-const placeholder = "Find CRC from database...";
+const placeholder = "Search ROMs by CRC, title, or region...";
 const query = ref("");
 const debouncedQuery = ref("");
 const localMap = ref(new Map());
@@ -176,7 +177,7 @@ const csvSize = computed(() => resolvedMap.value?.size || 0);
 const searchTerms = computed(() => parseSearchTerms(debouncedQuery.value));
 const entries = computed(() => mapToEntriesRaw(resolvedMap.value));
 const filtered = computed(() =>
-  filterRomEntries(entries.value, searchTerms.value)
+  filterRomEntries(entries.value, searchTerms.value),
 );
 const sorted = computed(() => {
   const list = [...filtered.value];
@@ -187,14 +188,14 @@ const sorted = computed(() => {
       key === "title"
         ? (a.title || a.name || "").toLowerCase()
         : key === "region"
-        ? (a.region || "").toUpperCase()
-        : (a.crc || "").toUpperCase();
+          ? (a.region || "").toUpperCase()
+          : (a.crc || "").toUpperCase();
     const bv =
       key === "title"
         ? (b.title || b.name || "").toLowerCase()
         : key === "region"
-        ? (b.region || "").toUpperCase()
-        : (b.crc || "").toUpperCase();
+          ? (b.region || "").toUpperCase()
+          : (b.crc || "").toUpperCase();
     if (av < bv) return -1 * dir;
     if (av > bv) return 1 * dir;
     return 0;
@@ -218,8 +219,8 @@ const resultSummary = computed(() =>
   csvSize.value
     ? `${csvSize.value} known signatures`
     : loading.value
-    ? "Loading signatures..."
-    : "Signatures offline"
+      ? "Loading signatures..."
+      : "Signatures offline",
 );
 
 function highlight(text) {
@@ -286,7 +287,7 @@ watch(
   () => hasQuery.value,
   (active) => {
     if (active) ensureMap();
-  }
+  },
 );
 
 watch(
@@ -298,13 +299,13 @@ watch(
       activeIndex.value = val.trim().length ? 0 : -1;
     }, 200);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
   () => limitedResults.value.length,
   (len) => {
     if (activeIndex.value >= len) activeIndex.value = len ? 0 : -1;
-  }
+  },
 );
 </script>
