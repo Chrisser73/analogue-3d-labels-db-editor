@@ -86,7 +86,7 @@ onBeforeUnmount(() => {
   border: 1px solid theme.$border-chip;
   background: theme.$accent-soft;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  // box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   transition:
     transform 120ms ease,
     box-shadow 120ms ease,

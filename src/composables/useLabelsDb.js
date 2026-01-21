@@ -235,6 +235,7 @@ export function useLabelsDb() {
     const idx = state.db.signatures.findIndex((s) => s === sig);
     if (idx === -1) return;
 
+    const crcHex = sig.toString(16).toUpperCase().padStart(8, "0");
     const next = new Set(removingSet.value);
     next.add(sig);
     removingSet.value = next;
@@ -243,6 +244,7 @@ export function useLabelsDb() {
       state.db.signatures.splice(idx, 1);
       state.db.images.splice(idx, 1);
       state.status = `${state.db.signatures.length} images`;
+      setMessage(`Deleted CRC: ${crcHex}`);
 
       const updated = new Set(removingSet.value);
       updated.delete(sig);
