@@ -26,7 +26,10 @@
               <button
                 type="button"
                 class="switch"
-                :class="{ on: selected.includes(item.crc), disabled: isPresent(item.crc) || applying }"
+                :class="{
+                  on: selected.includes(item.crc),
+                  disabled: isPresent(item.crc) || applying,
+                }"
                 @click.stop="toggleSelect(item.crc)"
                 :disabled="isPresent(item.crc) || applying"
               >
@@ -34,10 +37,17 @@
               </button>
             </span>
             <div class="quick-fix-label">
-              <span class="fix-name" v-html="highlightText(displayNameForCrc(item.crc))"></span>
+              <span
+                class="fix-name"
+                v-html="highlightText(displayNameForCrc(item.crc))"
+              ></span>
               <span class="fix-crc">{{ item.crc }}</span>
             </div>
-            <span v-if="isPresent(item.crc)" class="fix-dot" title="Already in DB"></span>
+            <span
+              v-if="isPresent(item.crc)"
+              class="fix-dot"
+              title="Already in DB"
+            ></span>
           </label>
         </div>
         <div class="quick-fix-actions">
@@ -91,7 +101,7 @@ const quickFixBase = [
 
 const baseDisplayName = (name) => {
   if (!name) return "";
-  const match = name.match(/^(.*?)(\s*\((NTSC-J|NTSC|PAL)\))$/i);
+  const match = name.match(/^(.*?)(\s*\((NTSC-J|NTSC|PAL|PAL-M)\))$/i);
   return match ? match[1].trim() : name;
 };
 
@@ -111,11 +121,14 @@ const quickFixOptions = computed(() =>
   quickFixBase.map((item) => {
     const name = displayNameForCrc(item.crc);
     return { ...item, name };
-  })
+  }),
 );
 
-const presentSet = computed(() =>
-  new Set((props.allEntries || []).map((e) => e.display?.toUpperCase?.() || ""))
+const presentSet = computed(
+  () =>
+    new Set(
+      (props.allEntries || []).map((e) => e.display?.toUpperCase?.() || ""),
+    ),
 );
 const isPresent = (crc) => presentSet.value.has(crc.toUpperCase());
 
@@ -123,7 +136,9 @@ const selected = ref([]);
 const applying = ref(false);
 const collapsibleOpen = ref(false);
 
-const hasSelection = computed(() => selected.value.some((crc) => !isPresent(crc)));
+const hasSelection = computed(() =>
+  selected.value.some((crc) => !isPresent(crc)),
+);
 
 function toggleSelect(crc) {
   if (isPresent(crc) || applying.value) return;
@@ -137,18 +152,20 @@ watch(
   () => presentSet.value,
   () => {
     selected.value = selected.value.filter((crc) => !isPresent(crc));
-  }
+  },
 );
 
 async function applyQuickFix() {
   const targets = quickFixOptions.value.filter(
-    (item) => selected.value.includes(item.crc) && !isPresent(item.crc)
+    (item) => selected.value.includes(item.crc) && !isPresent(item.crc),
   );
   if (!targets.length || applying.value) return;
   applying.value = true;
   try {
     await props.onInjectQuickFix(targets);
-    selected.value = selected.value.filter((crc) => !targets.some((t) => t.crc === crc));
+    selected.value = selected.value.filter(
+      (crc) => !targets.some((t) => t.crc === crc),
+    );
   } finally {
     applying.value = false;
   }

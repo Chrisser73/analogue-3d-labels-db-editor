@@ -32,7 +32,7 @@ export function cleanRomName(raw) {
   const lowerFull = noExt.toLowerCase();
 
   const segments = [...noExt.matchAll(/\(([^)]+)\)/g)].map((m) =>
-    (m[1] || "").trim().toLowerCase()
+    (m[1] || "").trim().toLowerCase(),
   );
 
   let region = null;
@@ -47,9 +47,11 @@ export function cleanRomName(raw) {
     if (!lower) return;
     if (lower.includes("proto")) extras.push("Proto");
     else if (lower.includes("aftermarket")) extras.push("Aftermarket");
-    else if (lower.includes("unl") || lower.includes("unlicensed")) extras.push("UNL");
+    else if (lower.includes("unl") || lower.includes("unlicensed"))
+      extras.push("UNL");
     else if (lower.includes("demo")) extras.push("Demo");
-    else if (lower.includes("ntsc-j") || lower.includes("japan")) markRegion("NTSC-J");
+    else if (lower.includes("ntsc-j") || lower.includes("japan"))
+      markRegion("NTSC-J");
     else if (
       lower === "ntsc" ||
       lower.includes("usa") ||
@@ -71,7 +73,10 @@ export function cleanRomName(raw) {
       markRegion("PAL");
   });
 
-  if (!region && (lowerFull.includes("ntsc-j") || lowerFull.includes("japan"))) {
+  if (
+    !region &&
+    (lowerFull.includes("ntsc-j") || lowerFull.includes("japan"))
+  ) {
     markRegion("NTSC-J");
   }
   if (
@@ -98,7 +103,10 @@ export function cleanRomName(raw) {
     markRegion("PAL");
   }
 
-  const base = noExt.replace(/\s*\([^)]*\)/g, "").trim().replace(/\s+/g, " ");
+  const base = noExt
+    .replace(/\s*\([^)]*\)/g, "")
+    .trim()
+    .replace(/\s+/g, " ");
   const tail = [region, ...extras].filter(Boolean);
   if (!tail.length) return base;
   return `${base} (${tail.join(" / ")})`;
@@ -128,7 +136,10 @@ function isLanguageSegment(segmentRaw = "") {
 
 export function cleanRomNameForSearch(raw) {
   const noExt = raw.replace(/\.[a-z0-9]{2,4}$/i, "");
-  const base = noExt.replace(/\s*\([^)]*\)/g, "").trim().replace(/\s+/g, " ");
+  const base = noExt
+    .replace(/\s*\([^)]*\)/g, "")
+    .trim()
+    .replace(/\s+/g, " ");
   const segments = [...noExt.matchAll(/\(([^)]+)\)/g)]
     .map((m) => (m[1] || "").trim())
     .filter(Boolean);
@@ -146,7 +157,7 @@ export function cleanRomNameForSearch(raw) {
 export function detectRegion(name = "") {
   const lowerFull = name.toLowerCase();
   const segments = [...name.matchAll(/\(([^)]+)\)/g)].map((m) =>
-    (m[1] || "").trim().toLowerCase()
+    (m[1] || "").trim().toLowerCase(),
   );
 
   let region = null;
@@ -156,7 +167,14 @@ export function detectRegion(name = "") {
 
   segments.forEach((lower) => {
     if (!lower) return;
-    if (lower.includes("ntsc-j") || lower.includes("japan")) markRegion("NTSC-J");
+    if (
+      lower.includes("ntsc-j") ||
+      lower.includes("japan") ||
+      lower.includes("asia")
+    )
+      markRegion("NTSC-J");
+    if (lower.includes("brazil") || lower.includes("brazil"))
+      markRegion("PAL-M");
     else if (
       lower === "ntsc" ||
       lower.includes("usa") ||
@@ -178,7 +196,10 @@ export function detectRegion(name = "") {
       markRegion("PAL");
   });
 
-  if (!region && (lowerFull.includes("ntsc-j") || lowerFull.includes("japan"))) {
+  if (
+    !region &&
+    (lowerFull.includes("ntsc-j") || lowerFull.includes("japan"))
+  ) {
     markRegion("NTSC-J");
   }
   if (
@@ -209,7 +230,7 @@ export function detectRegion(name = "") {
 }
 
 export function splitTitleAndRegion(name) {
-  const match = name.match(/^(.*?)(\s*\((NTSC-J|NTSC|PAL)\))$/i);
+  const match = name.match(/^(.*?)(\s*\((NTSC-J|NTSC|PAL|PAL-M)\))$/i);
   if (match) {
     const title = match[1].trim();
     const regionTag = match[3].toUpperCase();
@@ -242,7 +263,10 @@ export async function fetchRomMap() {
       csv = await resp.text();
     }
   } catch (err) {
-    console.error("Failed to fetch rom signatures, trying import fallback", err);
+    console.error(
+      "Failed to fetch rom signatures, trying import fallback",
+      err,
+    );
   }
 
   return parseRomCsv(csv);
@@ -272,7 +296,10 @@ export async function fetchRomMapRaw() {
       csv = await resp.text();
     }
   } catch (err) {
-    console.error("Failed to fetch rom signatures, trying import fallback", err);
+    console.error(
+      "Failed to fetch rom signatures, trying import fallback",
+      err,
+    );
   }
 
   return parseRomCsvRaw(csv);
