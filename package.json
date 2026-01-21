@@ -3,7 +3,7 @@
   "private": true,
   "description": "App for editing Analogue 3D Labels database files. Web App here: https://a3d-tools.online",
   "keywords": ["analogue", "3d", "labels", "database", "editor", "vue", "vite", "console", "images", "electron", "app", "tools", "cross-platform"],
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Christopher Matthes",
   "license": "MIT",
   "type": "module",

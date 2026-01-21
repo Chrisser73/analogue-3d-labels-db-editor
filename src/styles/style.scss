@@ -11,7 +11,11 @@ html {
 body {
   margin: 0;
   padding: 32px 18px 40px;
-  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
     sans-serif;
   background: radial-gradient(circle at top, #202338 0, #05060a 55%);
   background-size: cover;
@@ -90,8 +94,9 @@ p {
 }
 
 code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   font-size: 90%;
   background: rgba(255, 255, 255, 0.06);
   padding: 2px 4px;
@@ -196,7 +201,9 @@ code {
   color: theme.$fg;
   font-size: 14px;
   outline: none;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 
   &:focus {
     border-color: theme.$accent;
@@ -275,8 +282,11 @@ code {
   border-radius: theme.$radius-md;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 150ms ease,
-    background-color 150ms ease, border-color 150ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
 }
 
 .ui-btn-sm {
@@ -318,7 +328,7 @@ code {
 }
 
 .ui-btn-destructive {
-  background: linear-gradient(180deg, #991e34, #5f1b2c);
+  background: theme.$btn-gradient-danger;
   color: #fff;
 }
 
@@ -381,6 +391,61 @@ code {
   width: 100%;
 }
 
+.confirm-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  border-radius: theme.$radius-md;
+  overflow: hidden;
+  background: #0faf52;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 175, 82, 1) 50%,
+    rgba(115, 28, 47, 1) 51%
+  );
+}
+
+.confirm-option {
+  appearance: none;
+  border: none;
+  padding: 9px 0;
+  font-weight: 700;
+  color: theme.$fg;
+  background: red;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    transform 120ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  & + .confirm-option {
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+  }
+
+  &.confirm-yes {
+    background: theme.$btn-gradient-success;
+
+    &:hover {
+      background: theme.$btn-gradient-success-hover;
+    }
+  }
+
+  &.confirm-no {
+    background: theme.$btn-gradient-danger;
+
+    &:hover {
+      background: theme.$btn-gradient-danger-hover;
+    }
+  }
+}
+
 .ui-badge {
   display: inline-flex;
   align-items: center;
@@ -440,7 +505,9 @@ code {
   align-items: center;
   gap: 8px;
   justify-content: space-between;
-  transition: border-color 400ms ease, box-shadow 400ms ease,
+  transition:
+    border-color 400ms ease,
+    box-shadow 400ms ease,
     background-color 400ms ease;
 }
 
@@ -502,11 +569,14 @@ code {
 
 @keyframes pulse-highlight {
   0% {
-    box-shadow: 0 0 0 6px rgba(108, 92, 231, 0.15),
+    box-shadow:
+      0 0 0 6px rgba(108, 92, 231, 0.15),
       0 12px 30px rgba(0, 0, 0, 0.65);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(108, 92, 231, 0), 0 12px 30px rgba(0, 0, 0, 0.65);
+    box-shadow:
+      0 0 0 0 rgba(108, 92, 231, 0),
+      0 12px 30px rgba(0, 0, 0, 0.65);
   }
 }
 
@@ -674,7 +744,9 @@ code {
   border: 1px solid rgba(108, 92, 231, 0.45);
   background: #171a27;
   cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
   padding: 0;
 
   .switch-handle {
@@ -915,7 +987,9 @@ code {
   height: 18px;
   opacity: 0.35;
   filter: grayscale(1) brightness(0.85);
-  transition: opacity 120ms ease, filter 120ms ease;
+  transition:
+    opacity 120ms ease,
+    filter 120ms ease;
 
   &.active {
     opacity: 1;
@@ -1026,7 +1100,9 @@ code {
   padding: 14px 12px;
   background: rgba(162, 155, 254, 0.2);
   cursor: pointer;
-  transition: border-color 150ms ease, background-color 150ms ease;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
   min-height: 130px;
 }
 

@@ -65,16 +65,33 @@
             </div>
           </div>
           <UiButton
+            v-if="isRemoving(entry.sig)"
             variant="destructive"
             size="sm"
             class="full"
-            :disabled="isRemoving(entry.sig)"
-            @click="onRemove(entry.sig)"
+            :disabled="true"
           >
-            <template v-if="isRemoving(entry.sig)">
-              <Spinner /> Deleting...
-            </template>
-            <template v-else>Remove</template>
+            <Spinner /> Deleting...
+          </UiButton>
+          <div
+            v-else-if="confirmSig === entry.sig"
+            class="confirm-split full"
+          >
+            <button class="ui-btn-sm confirm-option confirm-yes" @click="confirmRemove(entry.sig)">
+              Yes
+            </button>
+            <button class="ui-btn-sm confirm-option confirm-no" @click="cancelConfirm">
+              No
+            </button>
+          </div>
+          <UiButton
+            v-else
+            variant="destructive"
+            size="sm"
+            class="full"
+            @click="requestConfirm(entry.sig)"
+          >
+            Remove
           </UiButton>
         </UiCard>
       </div>
@@ -83,7 +100,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import Badge from "../ui/Badge.vue";
 import QuickFixSection from "./QuickFixSection.vue";
 import Spinner from "../ui/Spinner.vue";
@@ -137,12 +154,26 @@ const props = defineProps({
 });
 
 const safeEntries = computed(() => props.entries || []);
+const confirmSig = ref(null);
 
 const { isCopied, flashCopy } = useCopyIndicator();
 
 function handleCopy(text) {
   props.onCopy?.(text);
   flashCopy(text);
+}
+
+function requestConfirm(sig) {
+  confirmSig.value = sig;
+}
+
+function cancelConfirm() {
+  confirmSig.value = null;
+}
+
+function confirmRemove(sig) {
+  confirmSig.value = null;
+  props.onRemove?.(sig);
 }
 
 function cardAlt(entry) {
