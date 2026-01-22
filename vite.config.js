@@ -8,6 +8,8 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 export default defineConfig({
   plugins: [vue()],
   build: {
+    minify: "esbuild",
+    cssMinify: "esbuild",
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),

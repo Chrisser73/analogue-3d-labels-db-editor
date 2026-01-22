@@ -1097,6 +1097,20 @@ code {
 
 #copyright a {
   margin: 0 4px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  border-radius: theme.$radius-sm;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    text-decoration: none;
+  }
 }
 
 .ui-spinner {
