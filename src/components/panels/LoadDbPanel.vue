@@ -10,14 +10,13 @@
           target="_blank"
           title="labels.db file download"
         >
-          here
+          here.
           <span class="screen-reader-text">
             Basic labels.db file download
           </span>
-        </a>.
+        </a>
       </p>
     </div>
-    <!-- <small v-if="dbStatus" class="small-note">{{ dbStatus }}</small> -->
   </div>
 
   <form class="load-grid" @submit.prevent="$emit('load-db')">
