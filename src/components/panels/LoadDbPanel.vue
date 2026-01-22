@@ -9,8 +9,12 @@
           href="/assets/labels.db"
           target="_blank"
           title="labels.db file download"
-          >here</a
-        >.
+        >
+          here
+          <span class="screen-reader-text">
+            Basic labels.db file download
+          </span>
+        </a>.
       </p>
     </div>
     <!-- <small v-if="dbStatus" class="small-note">{{ dbStatus }}</small> -->

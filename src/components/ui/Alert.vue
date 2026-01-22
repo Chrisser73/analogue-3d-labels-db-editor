@@ -6,6 +6,7 @@
       role="status"
       aria-live="polite"
     >
+      <span class="ui-badge ui-badge--secondary">Log</span>
       <slot />
     </div>
     <ToastStack :toasts="toasts" @dismiss="dismissToast" />
@@ -19,11 +20,23 @@ import ToastStack from "./ToastStack.vue";
 const props = defineProps({
   variant: {
     type: String,
+    default: "ghost",
+  },
+  variantToasts: {
+    type: String,
     default: "success",
   },
   toastMessage: {
     type: String,
     default: "",
+  },
+  toastCrc: {
+    type: String,
+    default: "",
+  },
+  toastAction: {
+    type: Function,
+    default: null,
   },
 });
 
@@ -31,9 +44,9 @@ const toasts = ref([]);
 const timers = new Map();
 
 watch(
-  () => props.toastMessage,
-  (val) => {
-    if (val) enqueueToast(val);
+  () => [props.toastMessage, props.toastCrc],
+  ([msg]) => {
+    if (msg) enqueueToast(msg);
   },
   { immediate: true },
 );
@@ -53,10 +66,11 @@ function enqueueToast(message) {
     message,
     variant: props.variant,
     duration,
+    actionLabel: props.toastCrc || "",
+    action: props.toastAction,
   });
-  // TODO: Re-enable auto-dismiss toasts
-  // const timeout = window.setTimeout(() => dismissToast(id), duration);
-  // timers.set(id, timeout);
+  const timeout = window.setTimeout(() => dismissToast(id), duration);
+  timers.set(id, timeout);
 }
 
 function dismissToast(id) {

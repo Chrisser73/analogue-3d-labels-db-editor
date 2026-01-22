@@ -10,8 +10,20 @@
             '--stack-index': idx,
           }"
         >
-          <div class="toast-shell" :class="`toast-${toast.variant}`">
-            <div class="toast-text">{{ toast.message }}</div>
+          <div
+            class="toast-shell"
+            :class="`toast-${toast.toastType || 'success'}`"
+          >
+            <div class="toast-text">
+              <span>{{ toast.message }}</span>
+              <a
+                v-if="toast.action && toast.actionLabel"
+                class="toast-link crc-link"
+                @click="handleAction(toast)"
+              >
+                {{ toast.actionLabel }}
+              </a>
+            </div>
             <button
               class="toast-close"
               type="button"
@@ -39,6 +51,13 @@ const emit = defineEmits(["dismiss"]);
 
 function dismiss(id) {
   emit("dismiss", id);
+}
+
+function handleAction(toast) {
+  if (toast?.action) {
+    toast.action(toast.actionLabel);
+  }
+  dismiss(toast.id);
 }
 </script>
 
@@ -94,6 +113,10 @@ function dismiss(id) {
 .toast-text {
   font-size: 14px;
   line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .toast-close {
@@ -118,6 +141,21 @@ function dismiss(id) {
 
   &:active {
     transform: translateY(0);
+  }
+}
+
+.toast-link {
+  border: none;
+  background: transparent;
+  color: theme.$accent-strong;
+  font-weight: normal;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+
+  &:hover {
+    color: #fff;
+    text-decoration: none;
   }
 }
 

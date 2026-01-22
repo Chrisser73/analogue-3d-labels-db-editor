@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <main class="app">
     <HeaderBar />
 
     <section class="panel top-panel">
@@ -16,21 +16,25 @@
       />
 
       <Alert
-        v-if="messageValue || labels.state.lastInsertedCrc"
-        variant="success"
-        :toast-message="alertToastMessage"
+        v-if="alertDisplay.text"
+        variant="ghost"
+        variant-toasts="success"
+        :toast-message="toastMessage"
+        :toast-crc="alertDisplay.crc"
+        :toast-action="handleToastAction"
       >
-        <template v-if="labels.state.lastInsertedCrc">
-          {{ lastCrcLabel }}
+        <template v-if="alertDisplay.crc">
+          {{ alertDisplay.text }}
           <a
             href="#"
-            @click.prevent="labels.scrollToCrc(labels.state.lastInsertedCrc)"
+            class="crc-link"
+            @click.prevent="handleToastAction(alertDisplay.crc)"
           >
-            {{ labels.state.lastInsertedCrc }}
+            {{ alertDisplay.crc }}
           </a>
         </template>
         <template v-else>
-          {{ messageValue }}
+          {{ alertDisplay.text }}
         </template>
       </Alert>
     </section>
@@ -81,7 +85,7 @@
     </section>
 
     <FooterBar />
-  </div>
+  </main>
 </template>
 
 <script setup>
@@ -108,16 +112,25 @@ const highlightSigValue = computed(() => labels.highlightSig.value ?? null);
 const filteredCount = computed(() =>
   (searchQueryValue.value || "").trim().length
     ? filteredEntriesValue.value.length
-    : 0
+    : 0,
 );
 const lastCrcLabel = computed(() =>
   (messageValue.value || "").startsWith("Copied")
     ? "Copied CRC to clipboard:"
-    : "Inserted / updated CRC:"
+    : "Inserted / updated CRC:",
 );
-const alertToastMessage = computed(
-  () => messageValue.value || (labels.state.lastInsertedCrc
-    ? `Inserted / updated CRC ${labels.state.lastInsertedCrc}`
-    : "")
-);
+const alertDisplay = computed(() => {
+  const crc = labels.state.lastInsertedCrc;
+  if (crc) {
+    return { text: lastCrcLabel.value, crc };
+  }
+  return { text: messageValue.value || "", crc: null };
+});
+
+const toastMessage = computed(() => alertDisplay.value.text);
+
+function handleToastAction(crc) {
+  if (!crc) return;
+  labels.scrollToCrc(crc);
+}
 </script>

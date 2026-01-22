@@ -467,16 +467,28 @@ code {
 
 .ui-alert {
   margin-top: 16px;
-  padding: 9px 12px;
+  padding: 8px 12px;
+  background: theme.$bg-dropzone;
   border-radius: theme.$radius-md;
   font-size: 14px;
-  border: 1px solid;
-}
+  border: 1px solid theme.$border-card;
 
-.ui-alert-success {
-  background: rgba(106, 213, 158, 0.12);
-  border-color: theme.$danger;
-  color: theme.$fg;
+  .ui-badge {
+    margin-right: 12px;
+    padding: 6px 8px;
+  }
+
+  &-success {
+    background: rgba(106, 213, 158, 0.12);
+    border-color: theme.$danger;
+    color: theme.$fg;
+  }
+
+  &-ghost {
+    background: none;
+    border: 0;
+    padding: 0;
+  }
 }
 
 .images-header {
@@ -484,11 +496,11 @@ code {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-}
 
-.images-header small {
-  color: theme.$muted;
-  font-size: 12px;
+  small {
+    color: theme.$muted;
+    font-size: 12px;
+  }
 }
 
 .card-grid {
@@ -499,7 +511,7 @@ code {
 
 .ui-card {
   background: theme.$bg-card;
-  border: 1px solid rgba(88, 93, 140, 0.4);
+  border: 1px solid theme.$border-card;
   border-radius: theme.$radius-md;
   padding: 8px 8px 12px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
@@ -588,6 +600,21 @@ code {
   color: #fff;
   padding: 0 2px;
   border-radius: 4px;
+}
+
+.screen-reader-text {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  -webkit-clip-path: inset(50%);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important;
+  width: 1px;
+  word-wrap: normal !important;
+  word-break: normal;
 }
 
 .ui-divider {
@@ -1047,6 +1074,17 @@ code {
   color: theme.$muted;
 }
 
+.crc-link {
+  color: theme.$accent-strong;
+  text-decoration: none;
+  font-weight: normal;
+
+  &:hover {
+    text-decoration: none;
+    color: #fff;
+  }
+}
+
 #copyright {
   display: flex;
   flex-direction: column;
@@ -1106,7 +1144,7 @@ code {
   border: 2px dashed rgba(255, 255, 255, 0.2);
   border-radius: theme.$radius-md;
   padding: 14px 12px;
-  background: rgba(162, 155, 254, 0.2);
+  background: theme.$bg-dropzone;
   cursor: pointer;
   transition:
     border-color 150ms ease,
