@@ -244,7 +244,7 @@ export function useLabelsDb() {
       state.db.signatures.splice(idx, 1);
       state.db.images.splice(idx, 1);
       state.status = `${state.db.signatures.length} images`;
-      setMessage(`Deleted CRC: ${crcHex}`);
+      setMessage(`Removed entry for CRC: ${crcHex}`);
 
       const updated = new Set(removingSet.value);
       updated.delete(sig);

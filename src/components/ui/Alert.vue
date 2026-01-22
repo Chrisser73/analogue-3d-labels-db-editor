@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="ui-alert"
+      class="ui-alert small-note"
       :class="`ui-alert-${variant}`"
       role="status"
       aria-live="polite"
