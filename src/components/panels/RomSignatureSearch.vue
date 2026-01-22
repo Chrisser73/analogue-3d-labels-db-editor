@@ -40,26 +40,6 @@
           <button
             type="button"
             class="sort-head"
-            @click="setSort('crc')"
-            :aria-pressed="sortKey === 'crc'"
-          >
-            <span class="sort-label">CRC</span>
-            <span class="sort-icons">
-              <img
-                src="/assets/sort-up.svg"
-                :class="sortIconClass('crc', 'asc')"
-                alt="Sort CRC ascending"
-              />
-              <img
-                src="/assets/sort-down.svg"
-                :class="sortIconClass('crc', 'desc')"
-                alt="Sort CRC descending"
-              />
-            </span>
-          </button>
-          <button
-            type="button"
-            class="sort-head"
             @click="setSort('title')"
             :aria-pressed="sortKey === 'title'"
           >
@@ -97,6 +77,26 @@
               />
             </span>
           </button>
+                    <button
+            type="button"
+            class="sort-head"
+            @click="setSort('crc')"
+            :aria-pressed="sortKey === 'crc'"
+          >
+            <span class="sort-label">CRC</span>
+            <span class="sort-icons">
+              <img
+                src="/assets/sort-up.svg"
+                :class="sortIconClass('crc', 'asc')"
+                alt="Sort CRC ascending"
+              />
+              <img
+                src="/assets/sort-down.svg"
+                :class="sortIconClass('crc', 'desc')"
+                alt="Sort CRC descending"
+              />
+            </span>
+          </button>
           <span class="sort-head placeholder"></span>
         </div>
         <div
@@ -107,13 +107,13 @@
           role="group"
           :aria-label="rowLabel(entry)"
         >
-          <div class="rom-crc" v-html="highlight(entry.crc)"></div>
           <div
             class="rom-title"
             v-html="highlight(entry.title || entry.name)"
           ></div>
           <div class="rom-region" v-if="entry.region">{{ entry.region }}</div>
           <div class="rom-region muted" v-else>—</div>
+          <div class="rom-crc" v-html="highlight(entry.crc)"></div>
           <div class="copy-wrap rom-copy">
             <UiButton
               size="sm"
