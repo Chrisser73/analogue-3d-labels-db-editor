@@ -77,7 +77,11 @@
             v-else-if="confirmSig === entry.sig"
             class="confirm-split full"
           >
-            <button class="ui-btn-sm confirm-option confirm-yes" @click="confirmRemove(entry.sig)">
+            <button
+              class="ui-btn-sm confirm-option confirm-yes"
+              @click="confirmRemove(entry.sig)"
+              :ref="(el) => setYesRef(el, entry.sig)"
+            >
               Yes
             </button>
             <button class="ui-btn-sm confirm-option confirm-no" @click="cancelConfirm">
@@ -100,7 +104,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import Badge from "../ui/Badge.vue";
 import QuickFixSection from "./QuickFixSection.vue";
 import Spinner from "../ui/Spinner.vue";
@@ -155,6 +159,7 @@ const props = defineProps({
 
 const safeEntries = computed(() => props.entries || []);
 const confirmSig = ref(null);
+const yesRefs = ref(new Map());
 
 const { isCopied, flashCopy } = useCopyIndicator();
 
@@ -165,6 +170,12 @@ function handleCopy(text) {
 
 function requestConfirm(sig) {
   confirmSig.value = sig;
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      const target = yesRefs.value.get(sig);
+      target?.focus();
+    });
+  });
 }
 
 function cancelConfirm() {
@@ -179,5 +190,18 @@ function confirmRemove(sig) {
 function cardAlt(entry) {
   const name = entry?.filename || entry?.display || "Label";
   return `${name} label preview`;
+}
+
+function setYesRef(el, sig) {
+  const map = yesRefs.value;
+  if (!map) return;
+  if (el) {
+    map.set(sig, el);
+    if (confirmSig.value === sig) {
+      requestAnimationFrame(() => el.focus());
+    }
+  } else {
+    map.delete(sig);
+  }
 }
 </script>
