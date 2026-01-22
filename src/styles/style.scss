@@ -380,6 +380,11 @@ code {
   height: 12px;
 }
 
+.ui-icon-sl {
+  width: 14px;
+  height: 14px;
+}
+
 .ui-icon-md {
   width: 20px;
   height: 20px;
@@ -453,6 +458,15 @@ code {
     &:hover {
       background: theme.$btn-gradient-danger-hover;
     }
+  }
+}
+
+.undo-row {
+  align-items: flex-start;
+  gap: 0;
+
+  .small-note {
+    margin-top: 8px;
   }
 }
 

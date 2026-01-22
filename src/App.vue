@@ -48,6 +48,8 @@
       <ModifyPanel
         :has-db="hasDbValue"
         :can-insert="canInsertValue"
+        :can-undo="labels.canUndo.value"
+        :undoing="labels.state.undoing"
         :inserting="labels.state.inserting"
         :image-reset-key="labels.imageResetKey.value"
         :search-query="searchQueryValue"
@@ -64,6 +66,7 @@
           }
         "
         @submit="labels.onAdd"
+        @undo="labels.undoLastChange"
         @update:crc="(val) => (labels.crcValue.value = val)"
         :crc="labels.crcValue.value"
       />

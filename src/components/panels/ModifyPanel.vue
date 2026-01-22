@@ -50,6 +50,28 @@
 
       <div class="ui-divider"><span></span></div>
 
+      <div class="stacked undo-row">
+        <UiButton
+          type="button"
+          variant="primary"
+          size="sm"
+          class="full"
+          :disabled="!canUndo || isUndoing"
+          @click="triggerUndo"
+        >
+          <template v-if="isUndoing">
+            <Spinner /> Undoing...
+          </template>
+          <template v-else>
+            <img class="ui-icon-sl" src="/assets/revert.svg" alt="Undo icon" />
+            Undo
+          </template>
+        </UiButton>
+        <span class="small-note">Undo last change (ctrl/cmd + Z)</span>
+      </div>
+
+      <div class="ui-divider"><span></span></div>
+
       <div class="stacked search-block">
         <div class="search-label">
           <span class="ui-label">Search in list</span>
@@ -93,7 +115,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import Dropzone from "../ui/Dropzone.vue";
 import InputUi from "../ui/Input.vue";
 import UiButton from "../ui/Button.vue";
@@ -102,6 +124,8 @@ import Spinner from "../ui/Spinner.vue";
 const props = defineProps({
   hasDb: Boolean,
   canInsert: Boolean,
+  canUndo: Boolean,
+  undoing: Boolean,
   inserting: Boolean,
   imageResetKey: {
     type: Number,
@@ -129,9 +153,10 @@ const props = defineProps({
   },
 });
 
-defineEmits([
+const emit = defineEmits([
   "select-image",
   "submit",
+  "undo",
   "update:crc",
   "update:searchQuery",
   "toggle-region-filter",
@@ -145,6 +170,23 @@ const searchHint = computed(
 const hasRegions = computed(
   () => Object.keys(props.regionCounts || {}).length > 0,
 );
+
+const undoingLocal = ref(false);
+const isUndoing = computed(() => undoingLocal.value || props.undoing);
+
+watch(
+  () => props.undoing,
+  (val) => {
+    undoingLocal.value = !!val;
+  },
+  { immediate: true },
+);
+
+function triggerUndo() {
+  if (!props.canUndo || isUndoing.value) return;
+  undoingLocal.value = true; // immediate visual feedback
+  nextTick(() => emit("undo")); // let UI update before undo work runs
+}
 
 function isRegionActive(region) {
   if (!props.activeRegionFilters) return false;

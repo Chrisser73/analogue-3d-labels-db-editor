@@ -1,4 +1,12 @@
-import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 import JSZip from "jszip";
 import {
   cleanRomNameForSearch,
@@ -26,6 +34,8 @@ export function useLabelsDb() {
     inserting: false,
     lastInsertedCrc: null,
     packingZip: false,
+    lastAction: null,
+    undoing: false,
   });
 
   const dbFileInput = ref(null);
@@ -159,6 +169,7 @@ export function useLabelsDb() {
       state.db = parseLabelsDb(buf);
       state.status = `${state.db.signatures.length} entries`;
       setMessage("DB loaded successfully.");
+      state.lastAction = null;
     } catch (err) {
       console.error(err);
       state.db = null;
@@ -191,6 +202,8 @@ export function useLabelsDb() {
       const sig = parseInt(crc, 16) >>> 0;
 
       const idx = state.db.signatures.findIndex((s) => s === sig);
+      const previousImage =
+        idx !== -1 ? new Uint8Array(state.db.images[idx]) : null;
       if (idx === -1) {
         state.db.signatures.push(sig);
         state.db.images.push(bgra);
@@ -200,6 +213,12 @@ export function useLabelsDb() {
 
       state.lastInsertedCrc = crc;
       state.message = `Inserted / updated CRC ${crc}`;
+      state.lastAction = {
+        type: "add",
+        crc,
+        wasReplace: idx !== -1,
+        previousImage,
+      };
       crcValue.value = "";
       if (imageInput.value?.clear) {
         imageInput.value.clear();
@@ -236,6 +255,11 @@ export function useLabelsDb() {
     if (idx === -1) return;
 
     const crcHex = sig.toString(16).toUpperCase().padStart(8, "0");
+    const snapshot = {
+      sig,
+      index: idx,
+      image: new Uint8Array(state.db.images[idx]),
+    };
     const next = new Set(removingSet.value);
     next.add(sig);
     removingSet.value = next;
@@ -245,6 +269,10 @@ export function useLabelsDb() {
       state.db.images.splice(idx, 1);
       state.status = `${state.db.signatures.length} images`;
       setMessage(`Removed entry for CRC: ${crcHex}`);
+      state.lastAction = {
+        type: "delete",
+        entries: [snapshot],
+      };
 
       const updated = new Set(removingSet.value);
       updated.delete(sig);
@@ -373,6 +401,10 @@ export function useLabelsDb() {
         pending.length === 1 ? "y" : "ies"
       }.`;
       state.lastInsertedCrc = pending[pending.length - 1].crc;
+      state.lastAction = {
+        type: "inject",
+        entries: pending.map((p) => ({ crc: p.crc })),
+      };
     } catch (err) {
       console.error("Failed to inject preset entries", err);
       const msg = err instanceof Error ? err.message : String(err);
@@ -439,7 +471,93 @@ export function useLabelsDb() {
 
   onMounted(() => {
     loadRomNames();
+    window.addEventListener("keydown", onKeydownUndo);
   });
+
+  onBeforeUnmount(() => {
+    window.removeEventListener("keydown", onKeydownUndo);
+  });
+
+  const canUndo = computed(() => !!state.lastAction && !state.undoing);
+
+  async function undoLastChange() {
+    if (!state.db || !state.lastAction) return;
+    state.undoing = true;
+    await nextTick(); // allow UI to reflect undoing state
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    const started = performance.now();
+    const action = state.lastAction;
+
+    try {
+      if (action.type === "delete" && action.entries?.length) {
+        action.entries.forEach((entry) => {
+          const idx = Math.min(
+            Math.max(entry.index ?? state.db.signatures.length, 0),
+            state.db.signatures.length
+          );
+          state.db.signatures.splice(idx, 0, entry.sig);
+          state.db.images.splice(idx, 0, new Uint8Array(entry.image));
+        });
+        state.status = `${state.db.signatures.length} entries`;
+        state.message = "Restored last deletion.";
+        state.lastInsertedCrc = action.entries[0]
+          ? action.entries[0].sig.toString(16).toUpperCase().padStart(8, "0")
+          : null;
+        return;
+      }
+
+      if (action.type === "add") {
+        const sig = parseInt(action.crc, 16) >>> 0;
+        const idx = state.db.signatures.findIndex((s) => s === sig);
+        if (action.wasReplace && action.previousImage) {
+          if (idx !== -1) {
+            state.db.images[idx] = new Uint8Array(action.previousImage);
+          }
+          state.message = `Reverted update for CRC ${action.crc}.`;
+        } else {
+          if (idx !== -1) {
+            state.db.signatures.splice(idx, 1);
+            state.db.images.splice(idx, 1);
+          }
+          state.message = `Removed inserted CRC ${action.crc}.`;
+        }
+        state.status = `${state.db.signatures.length} entries`;
+        state.lastInsertedCrc = null;
+        return;
+      }
+
+      if (action.type === "inject" && action.entries?.length) {
+        action.entries.forEach((entry) => {
+          const sigNum = parseInt(entry.crc, 16) >>> 0;
+          const idx = state.db.signatures.findIndex((s) => s === sigNum);
+          if (idx !== -1) {
+            state.db.signatures.splice(idx, 1);
+            state.db.images.splice(idx, 1);
+          }
+        });
+        state.status = `${state.db.signatures.length} entries`;
+        state.message = `Reverted last injection (${action.entries.length}).`;
+        state.lastInsertedCrc = null;
+      }
+    } finally {
+      state.lastAction = null;
+      const elapsed = performance.now() - started;
+      const remaining = Math.max(1200 - elapsed, 0);
+      if (remaining > 0) {
+        await new Promise((resolve) => setTimeout(resolve, remaining));
+      }
+      state.undoing = false;
+    }
+  }
+
+  function onKeydownUndo(e) {
+    if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === "z") {
+      if (canUndo.value) {
+        e.preventDefault();
+        undoLastChange();
+      }
+    }
+  }
 
   return {
     state,
@@ -466,6 +584,7 @@ export function useLabelsDb() {
     filteredEntries,
     baseFilteredEntries,
     regionCounts,
+    canUndo,
     toggleRegionFilter,
     clearRegionFilters,
     setMessage,
@@ -478,6 +597,7 @@ export function useLabelsDb() {
     downloadImages,
     copyToClipboard,
     injectPresetEntries,
+    undoLastChange,
     scrollToCrc,
     isRemoving,
     highlightText,
