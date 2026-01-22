@@ -85,6 +85,7 @@
     </section>
 
     <FooterBar />
+    <ScrollTopButton />
   </main>
 </template>
 
@@ -96,6 +97,7 @@ import LoadDbPanel from "./components/panels/LoadDbPanel.vue";
 import ModifyPanel from "./components/panels/ModifyPanel.vue";
 import ExtractedPanel from "./components/panels/ExtractedPanel.vue";
 import RomSignatureSearch from "./components/panels/RomSignatureSearch.vue";
+import ScrollTopButton from "./components/ui/ScrollTopButton.vue";
 import { useLabelsDb } from "./composables/useLabelsDb";
 import { computed } from "vue";
 
