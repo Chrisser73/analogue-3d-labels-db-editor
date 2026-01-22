@@ -380,17 +380,40 @@ export function useLabelsDb() {
     }
   }
 
-  function scrollToCrc(crc) {
-    const target = document.getElementById(crc.toUpperCase());
+  function waitForScrollIdle(idleMs = 160) {
+    return new Promise((resolve) => {
+      let timer = setTimeout(done, idleMs);
+      function done() {
+        clearTimeout(timer);
+        window.removeEventListener("scroll", onScroll, true);
+        resolve();
+      }
+      function onScroll() {
+        clearTimeout(timer);
+        timer = setTimeout(done, idleMs);
+      }
+      window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    });
+  }
+
+  async function scrollToCrc(crc) {
+    const normalized = (crc || "").toString().toUpperCase();
+    const target = document.getElementById(normalized);
     if (target) {
       target.scrollIntoView({ behavior: "smooth", block: "center" });
-      highlightSig.value = crc.toUpperCase();
+      await waitForScrollIdle();
+    }
+
+    // Reset then re-apply to force the highlight class, even for the same CRC.
+    highlightSig.value = null;
+    requestAnimationFrame(() => {
+      highlightSig.value = normalized;
       setTimeout(() => {
-        if (highlightSig.value === crc.toUpperCase()) {
+        if (highlightSig.value === normalized) {
           highlightSig.value = null;
         }
       }, 1400);
-    }
+    });
   }
 
   function isRemoving(sig) {

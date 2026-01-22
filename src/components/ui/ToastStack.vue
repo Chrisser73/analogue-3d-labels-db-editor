@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div class="toast-viewport" role="status" aria-live="polite">
-      <TransitionGroup name="toast">
+      <TransitionGroup name="toast" move-class="toast-no-move">
         <div
           v-for="(toast, idx) in toasts"
           :key="toast.id"
@@ -69,18 +69,18 @@ function handleAction(toast) {
   top: 14px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  z-index: 2000;
+  width: min(420px, calc(100vw - 10px));
+  height: 0;
   pointer-events: none;
+  z-index: 2000;
 }
 
 .toast-item {
-  position: relative;
-  width: min(420px, calc(100vw - 10px));
-  transform: translateY(calc(var(--stack-index) * -40px))
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(calc(var(--stack-index) * 12px))
     scale(calc(1 - var(--stack-index) * 0.02));
   z-index: calc(200 - var(--stack-index));
   pointer-events: all;
@@ -94,7 +94,7 @@ function handleAction(toast) {
   box-shadow:
     0 18px 38px rgba(0, 0, 0, 0.45),
     0 6px 18px rgba(0, 0, 0, 0.35);
-  padding: 12px 14px;
+  padding: 8px 12px;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -112,7 +112,7 @@ function handleAction(toast) {
 
 .toast-text {
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1rem;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -159,6 +159,10 @@ function handleAction(toast) {
   }
 }
 
+.toast-no-move {
+  transition: none !important;
+}
+
 .toast-enter-active {
   transition:
     opacity 280ms ease,
@@ -178,6 +182,6 @@ function handleAction(toast) {
 
 .toast-leave-to {
   opacity: 0;
-  transform: translateY(-12px) scale(0.97);
+  transform: translateY(12px) scale(0.97);
 }
 </style>
