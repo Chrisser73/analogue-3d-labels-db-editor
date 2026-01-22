@@ -2,8 +2,9 @@
   <div class="panel">
     <div class="images-header">
       <h2>Extracted Images</h2>
-      <small
-        ><Badge :class="'ui-badge--secondary'">{{ dbStatus }}</Badge>
+      <small>
+        <!-- <Badge :class="'ui-badge--secondary'">{{ dbStatus }}</Badge> -->
+        <Badge class="ui-badge--ghost">{{ dbStatus }}</Badge>
       </small>
     </div>
     <div v-if="loading" class="panel-loading">
@@ -31,11 +32,7 @@
           :id="entry.display"
           :class="{ 'card-highlight': highlightSig === entry.display }"
         >
-          <img
-            class="card-thumb"
-            :src="entry.url"
-            :alt="cardAlt(entry)"
-          />
+          <img class="card-thumb" :src="entry.url" :alt="cardAlt(entry)" />
           <div class="card-meta">
             <div class="card-id">
               <span v-html="highlightText(entry.display)"></span>
@@ -73,10 +70,7 @@
           >
             <Spinner /> Deleting...
           </UiButton>
-          <div
-            v-else-if="confirmSig === entry.sig"
-            class="confirm-split full"
-          >
+          <div v-else-if="confirmSig === entry.sig" class="confirm-split full">
             <button
               class="ui-btn-sm confirm-option confirm-yes"
               @click="confirmRemove(entry.sig)"
@@ -84,7 +78,10 @@
             >
               Yes
             </button>
-            <button class="ui-btn-sm confirm-option confirm-no" @click="cancelConfirm">
+            <button
+              class="ui-btn-sm confirm-option confirm-no"
+              @click="cancelConfirm"
+            >
               No
             </button>
           </div>

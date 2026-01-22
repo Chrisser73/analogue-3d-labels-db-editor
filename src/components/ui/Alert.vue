@@ -6,8 +6,10 @@
       role="status"
       aria-live="polite"
     >
-      <span class="ui-badge ui-badge--secondary">Log</span>
-      <slot />
+      <code class="code panel-log">
+        <span>LOG</span>
+        <slot />
+      </code>
     </div>
     <ToastStack :toasts="toasts" @dismiss="dismissToast" />
   </div>

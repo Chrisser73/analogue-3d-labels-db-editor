@@ -103,6 +103,20 @@ code {
   border-radius: 4px;
 }
 
+.panel-log {
+  margin: 0px 0 0 4px;
+  display: inline-block;
+  padding: 4px 2px;
+  width: 100%;
+
+  span {
+    background: theme.$bg-card;
+    margin-right: 4px;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+}
+
 .panel {
   background: linear-gradient(
     180deg,
@@ -335,6 +349,24 @@ code {
   color: #fff;
 }
 
+.btn-wcag {
+  margin: 0 4px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  border-radius: theme.$radius-sm;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    text-decoration: none;
+  }
+}
+
 .btn-primary {
   background: theme.$accent;
   color: #fff;
@@ -482,6 +514,13 @@ code {
 
   &--secondary {
     background: theme.$bg-card;
+    color: theme.$muted;
+  }
+
+  &--ghost {
+    background: none;
+    padding: 0;
+    border: 0;
     color: theme.$muted;
   }
 }
@@ -1116,24 +1155,6 @@ code {
   gap: 4px;
 }
 
-#copyright a {
-  margin: 0 4px;
-  padding: 2px 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 20px;
-  border-radius: theme.$radius-sm;
-  transition:
-    background-color 140ms ease,
-    color 140ms ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    text-decoration: none;
-  }
-}
-
 .ui-spinner {
   width: 16px;
   height: 16px;
@@ -1190,6 +1211,11 @@ code {
 .ui-dropzone.is-drag {
   border-color: theme.$accent;
   background: rgba(108, 92, 231, 0.08);
+}
+
+.ui-dropzone.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .drop-text {

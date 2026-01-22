@@ -20,15 +20,22 @@
   </div>
 
   <form class="load-grid" @submit.prevent="$emit('load-db')">
-    <Dropzone
-      ref="dbDrop"
-      accept=".db"
-      required
-      placeholder="labels.db"
-      :inputId="'labelsUpload'"
-      :inputName="'labelsUpload'"
-      @select="onSelect"
-    />
+    <div class="drop-wrap">
+      <Dropzone
+        ref="dbDrop"
+        accept=".db"
+        placeholder="labels.db"
+        :inputId="'labelsUpload'"
+        :inputName="'labelsUpload'"
+        :disabled="loading"
+        @select="onSelect"
+      />
+      <div v-if="loading" class="drop-loading">
+        <Spinner class="ui-spinner-md" />
+        <div class="drop-loading__text">Reading database...</div>
+      </div>
+    </div>
+
     <div class="button-row">
       <UiButton
         type="submit"
@@ -36,7 +43,7 @@
         size="md"
         :disabled="loading || !localCanLoad"
       >
-        <template v-if="loading"> <Spinner /> Loading DB... </template>
+        <template v-if="loading"> <Spinner />Reading DB... </template>
         <template v-else>
           <div class="text-icon">
             <span>Load DB</span>
@@ -142,3 +149,66 @@ function onSelect(file) {
   emit("select-db", file);
 }
 </script>
+
+<style scoped>
+.drop-wrap {
+  position: relative;
+}
+
+.load-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.load-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 12, 20, 0.85);
+  border-radius: 12px;
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.load-overlay__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+}
+
+.load-overlay__text {
+  font-size: 14px;
+}
+
+.drop-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 12, 20, 0.82);
+  border-radius: 8px;
+  backdrop-filter: blur(2px);
+  z-index: 4;
+  gap: 10px;
+}
+
+.drop-loading__text {
+  color: #fff;
+  font-size: 14px;
+}
+</style>

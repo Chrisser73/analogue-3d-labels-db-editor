@@ -59,9 +59,7 @@
           :disabled="!canUndo || isUndoing"
           @click="triggerUndo"
         >
-          <template v-if="isUndoing">
-            <Spinner /> Undoing...
-          </template>
+          <template v-if="isUndoing"> <Spinner /> Undoing... </template>
           <template v-else>
             <img class="ui-icon-sl" src="/assets/revert.svg" alt="Undo icon" />
             Undo
@@ -74,7 +72,7 @@
 
       <div class="stacked search-block">
         <div class="search-label">
-          <span class="ui-label">Search in list</span>
+          <span class="ui-label">Search in your DB</span>
           <small class="small-note">({{ searchHint }})</small>
         </div>
         <InputUi
@@ -210,6 +208,7 @@ function isRegionActive(region) {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-bottom: 4px;
 }
 
 .region-filter-badge {

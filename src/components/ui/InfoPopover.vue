@@ -124,7 +124,6 @@ onBeforeUnmount(() => {
   box-shadow: theme.$shadow-soft;
   color: theme.$fg;
   z-index: 20;
-  backdrop-filter: blur(2px);
 }
 
 .info-body {

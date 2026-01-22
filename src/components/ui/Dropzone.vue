@@ -7,11 +7,12 @@
     </label>
     <div
       class="ui-dropzone"
-      :class="{ 'is-drag': isDragOver }"
+      :class="{ 'is-drag': isDragOver, 'is-disabled': disabled }"
       role="button"
       tabindex="0"
       :aria-label="dropAriaLabel"
       :aria-describedby="hintId || undefined"
+      :aria-disabled="disabled"
       @dragover.prevent="onDragOver"
       @dragleave.prevent="onDragLeave"
       @drop.prevent="onDrop"
@@ -34,7 +35,6 @@
       :id="inputId"
       :name="inputName"
       :accept="accept"
-      :required="required"
       :aria-label="dropAriaLabel"
       :aria-describedby="hintId || undefined"
       @change="onFileChange"
@@ -55,6 +55,7 @@ const props = defineProps({
   required: { type: Boolean, default: false },
   placeholder: { type: String, default: "Drop a file here" },
   infoHtml: { type: String, default: "" },
+  disabled: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(["select"]);
@@ -75,6 +76,7 @@ const hintId = computed(() =>
 );
 
 function onDragOver() {
+  if (props.disabled) return;
   isDragOver.value = true;
 }
 
@@ -89,6 +91,7 @@ function useFile(file) {
 }
 
 function onDrop(e) {
+  if (props.disabled) return;
   isDragOver.value = false;
   const file = e.dataTransfer?.files?.[0];
   useFile(file);
@@ -100,6 +103,7 @@ function onFileChange(e) {
 }
 
 function openFilePicker() {
+  if (props.disabled) return;
   inputEl.value?.click();
 }
 
