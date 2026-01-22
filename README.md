@@ -27,25 +27,41 @@ All processing happens locally in your browser – no data is ever uploaded to a
 - The app parses:
   - the header,
   - the cartridge signature index,
-  - and the image blocks.
+  - the image blocks
+  - region (PAL, NTSC, NTSC-J and PAL-M)
+  - rom name based on self-builded db (Incompleteness may occur)
 - All detected entries are displayed as a responsive grid of “cards”.
 
-Each card shows:
+---
 
-- A **thumbnail preview** rendered from the raw BGRA data.
-- The **cartridge signature** (CRC32, first 8KiB /Byteorder).
-- A **Remove** button to delete that entry from the in-memory database.
+### Logging
+
+- The app will log your latest change inside the top panel ("LOG") and provide you with a toas-popup
+- In the log or notification, you will find a link to your added entry. Click on it to scroll down and highlight the entry.
+
+---
+
+### Database Game Lookup
+
+- A complete custom builded and mapped Database (by me) where you can look for your game if it not exists in DB.
+- After searching for a game, the filtered result list will appear and you can sort the rows by asc or desc.
+- Copy the CRC header once you have found your game and want to add it.
 
 ---
 
 ### Thumbnail preview grid
 
 - All label images are rendered to PNG on the fly.
-- Thumbnails are shown in a modern dark-themed grid:
-  - Clean, card-style layout.
-  - Signature displayed underneath the image.
-  - Remove button per entry.
 - This gives you a clear overview of what’s currently stored in your `labels.db`.
+- Copy CRC-Herader to clipboard functionality
+
+---
+
+### Search inside your loaded DB
+
+- You can serch inside your loaded db by using "Search in your DB"
+- Substrings or CRC codes (comma-separated) are possible, app will highlight entries
+- You can filter region-badges or reset all filters by pressing "Clear filters"
 
 ---
 
@@ -54,21 +70,20 @@ Each card shows:
 The “Modify Database” panel allows you to insert or update entries:
 
 1. **Select a PNG image**
-
    - Any size is accepted.
    - The app automatically resizes the image to **74×86 pixels**.
 
 2. **Enter the cartridge signature (CRC32)**
-
    - 8-digit hexadecimal string, e.g. `98E67875`.
    - This is the signature that Analogue 3D uses to match cartridges.
+   - Use "Database Game Lookup" if you need to find your specificc entry.
 
 3. **Insert / Replace**
-
    - If the CRC already exists in the database:
      - The existing label image for that CRC is replaced.
    - If the CRC does not exist:
      - A new entry is appended to the in-memory list.
+   - Undo button to revert last change
 
 4. **Batch download Images**
    - If the .db was extracted successfully, you will be able to download the extraced images as .zip-file via the "Download Images (ZIP)"-button.
@@ -78,10 +93,10 @@ All changes happen **in-memory** until you download the modified file.
 ---
 
 ### Inject flashcart images
-Added ability to inject missing flashcart labels like for "SummerCard 64" r "Everdrive 64 X7" by Krikzz.
+
+Added ability to inject missing flashcart labels like for "SummerCard 64" or "Everdrive 64 X7" by Krikzz.
 Just switch on the flashcart you want to add the label to DB and hit "Apply".
 It will auto-detect if one of those entries are already in DB.
-
 
 ---
 
@@ -89,8 +104,9 @@ It will auto-detect if one of those entries are already in DB.
 
 - Each card in the grid includes a **Remove** button.
 - Clicking it:
-  - Removes the signature and image at that index from the in-memory database.
-  - Immediately updates the grid to reflect the change.
+  - Gives you a "Yes" oor "No" option. When clicking "Yes":
+    - It removes the signature and image at that index from the in-memory database.
+  - You can revert your last change by using crtl/cmd + z or by clicking the "Undo"-Button
 
 Nothing is written back to disk until you explicitly download and replace `labels.db`.
 
@@ -99,16 +115,10 @@ Nothing is written back to disk until you explicitly download and replace `label
 ### Export a new `labels.db`
 
 - Once you are satisfied with your changes:
-  - Click **“Download Modified DB”**.
-- The app:
-  - Rebuilds the entire `labels.db` structure.
-  - Writes:
-    - the original header,
-    - a sorted signature index,
-    - all corresponding image blocks (BGRA + padding).
-- The resulting file is downloaded as `labels_modified.db`.
+  - Click **“Download modified”**.
+  - The resulting file is downloaded as `labels_modified.db`.
 
-> **Recommended workflow**
+> **⚠️ Recommended workflow**
 >
 > 1. Backup your original `labels.db` from the SD card.
 > 2. Rename `labels_modified.db` to `labels.db`.
@@ -125,7 +135,6 @@ This is a simplified description of how the editor interprets `labels.db`.
 
 - `0x0000–0x00FF` – **Header**
 - `0x0100–0x40FF` – **Cartridge signature index**
-
   - 32-bit little-endian words.
   - Each value is a **CRC32 signature** of a cartridge.
   - The list is sorted in ascending order.
@@ -179,8 +188,8 @@ In the editor:
 - All operations (parsing, editing, preview rendering, export) are executed **fully in the browser**.
 - No external servers, APIs, or uploads are involved.
 - This makes the tool suitable for:
-  - Offline use,
-  - Sensitive local setups,
+  - Offline use
+  - Sensitive local setups
   - Environments without internet connectivity.
 
 ---
@@ -212,16 +221,7 @@ Compose will build the assets inside the container and serve the optimized stati
 - `npm run build` – create a production build in `dist/`.
 - `npm run preview` – serve the built `dist/` locally to validate the production bundle.
 
-## ⚠️ Backup reminder (again, because it matters)
-
-- Before you overwrite any labels.db on your SD card:
-- Make a copy of the original labels.db and store it safely.
-- Replace it with the downloaded labels_modified.db (renamed to labels.db).
-- If anything looks wrong on the Analogue 3D, restore the backup.
-
-This small step can save you a lot of time and frustration.
-
 ## Credits:
 
 - Web UI inspired by enoznal.com on https://enoznal.com/3d/labels.html
-- Extractor inspred by maspling via https://github.com/maspling/a3dlabel
+- Extractor inspired by maspling via https://github.com/maspling/a3dlabel
