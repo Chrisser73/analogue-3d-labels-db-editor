@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <link rel="canonical" href="https://www.a3d-tools.online/" />
     <link rel="alternate" hreflang="en" href="https://www.a3d-tools.online/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.a3d-tools.online/" />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://www.a3d-tools.online/"
+    />
     <link rel="icon" type="image/png" href="/assets/icon.png" />
     <link rel="apple-touch-icon" href="/assets/icon.png" />
     <link rel="shortcut icon" type="image/png" href="/assets/icon.png" />
@@ -15,6 +19,7 @@
       name="description"
       content="Online editor for Analogue 3D labels.db files. View, add, remove and replace cartridge label images directly in your browser."
     />
+    <meta name="msvalidate.01" content="F30F909BDB68CAF5424F0FAAE6194020" />
     <meta name="robots" content="index,follow" />
     <meta name="application-name" content="Analogue 3D Labels.db Editor" />
     <meta name="author" content="Christopher Matthes" />
@@ -33,6 +38,7 @@
       content="Fast, browser-based editor for Analogue 3D labels.db files. Upload, preview and swap cartridge label artwork."
     />
     <meta name="twitter:image" content="/assets/icon.png" />
+    <link rel="stylesheet" href="/assets/main.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -54,14 +60,67 @@
         }
       }
     </script>
+    <style>
+      body {
+        background: #0b0c10;
+        color: #e6e9ff;
+      }
+    </style>
     <title>Analogue 3D Labels.db Editor</title>
   </head>
   <body>
+    <main id="seo-shell" class="app">
+      <header class="hero hero-plain">
+        <div class="hero-left">
+          <img class="logo" src="/assets/icon-alt.png" alt="Analogue 3D logo" />
+          <div>
+            <h1>Labels.db File Extractor &amp; Editor</h1>
+            <p class="hero-sub">
+              Edit and extract Analogue 3D <code>labels.db</code> files right in
+              your browser.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel top-panel skeleton-panel">
+        <div class="panel-header">
+          <h2>Load Database File</h2>
+          <small aria-hidden="true">&nbsp;</small>
+        </div>
+        <p class="hero-sub" aria-hidden="true">
+          Load your existing <code>labels.db</code> so you can view and edit its
+          entries locally in your browser.
+        </p>
+        <div class="skeleton-line skeleton-wide" aria-hidden="true"></div>
+      </section>
+
+      <section class="rom-search rom-search--headline">
+        <h2>Database Game Lookup</h2>
+      </section>
+      <div class="skeleton-line skeleton-input" aria-hidden="true"></div>
+
+      <section class="layout skeleton-row" aria-hidden="true">
+        <div class="panel skeleton-panel">
+          <h2>Modify Database</h2>
+          <p class="hero-sub">
+            No database loaded. Please load a labels.db file to view entries.
+          </p>
+        </div>
+        <div class="panel skeleton-panel">
+          <h2>Extracted Images</h2>
+          <p class="hero-sub">No DB loaded</p>
+        </div>
+      </section>
+    </main>
+
     <div id="app"></div>
     <noscript>
-      Analogue 3D labels.db editor – open the labels database from your Analogue 3D
-      console, view existing cartridge artwork, and replace labels with your own PNG
-      images. Works entirely client-side; no uploads are stored.
+      JavaScript is required to use this application! Please enable JavaScript
+      in your browser settings.<br />
+      Analogue 3D labels.db editor - open the labels database from your Analogue
+      3D console, view existing cartridge artwork, and replace labels with your
+      own PNG images. Works entirely client-side; no uploads are stored.
     </noscript>
     <script type="module" src="/src/main.js"></script>
   </body>
