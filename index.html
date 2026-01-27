@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="canonical" href="https://www.a3d-tools.online/" />
+    <link rel="alternate" hreflang="en" href="https://www.a3d-tools.online/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.a3d-tools.online/" />
     <link rel="icon" type="image/png" href="/assets/icon.png" />
     <link rel="apple-touch-icon" href="/assets/icon.png" />
     <link rel="shortcut icon" type="image/png" href="/assets/icon.png" />
@@ -14,6 +16,9 @@
       content="Online editor for Analogue 3D labels.db files. View, add, remove and replace cartridge label images directly in your browser."
     />
     <meta name="robots" content="index,follow" />
+    <meta name="application-name" content="Analogue 3D Labels.db Editor" />
+    <meta name="author" content="Christopher Matthes" />
+    <meta property="og:url" content="https://www.a3d-tools.online/" />
     <meta property="og:title" content="A3D Labels Editor" />
     <meta
       property="og:description"
@@ -21,10 +26,43 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/assets/icon.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Analogue 3D Labels.db Editor" />
+    <meta
+      name="twitter:description"
+      content="Fast, browser-based editor for Analogue 3D labels.db files. Upload, preview and swap cartridge label artwork."
+    />
+    <meta name="twitter:image" content="/assets/icon.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Analogue 3D Labels.db Editor",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web",
+        "description": "Edit, extract and manage Analogue 3D labels.db files directly in the browser with preview and batch replace tools.",
+        "url": "https://www.a3d-tools.online/",
+        "image": "https://www.a3d-tools.online/assets/icon.png",
+        "creator": {
+          "@type": "Person",
+          "name": "Christopher Matthes"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
     <title>Analogue 3D Labels.db Editor</title>
   </head>
   <body>
     <div id="app"></div>
+    <noscript>
+      Analogue 3D labels.db editor – open the labels database from your Analogue 3D
+      console, view existing cartridge artwork, and replace labels with your own PNG
+      images. Works entirely client-side; no uploads are stored.
+    </noscript>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

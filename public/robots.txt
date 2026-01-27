@@ -7,3 +7,5 @@ Allow: /
 # Disallow typical build and tooling directories (not exposed in production, kept for clarity)
 Disallow: /node_modules/
 Disallow: /dist/
+
+Sitemap: https://www.a3d-tools.online/sitemap.xml
